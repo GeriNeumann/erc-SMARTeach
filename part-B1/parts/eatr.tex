@@ -1,15 +1,48 @@
 \subsection{Bibliometrics and summary of publication activities}
+I have authored over 40 journal publications and over 90 conference publications in the fields of machine learning (reinforcement learning, variational inference, meta-learning, time-series modelling, learning physics simulations), robotics (robot reinforcement learning, imitation learning, movement representations, dynamics learning) and computer vision (meta-learning and 6D pose estimation). Many of these papers have been published at Tier-1 conferences (NeurIPS, ICLR, ICML, RSS, CoRL, ICRA, IROS) or journals (JMLR, MLJ, IJRR, RAL, Auro). 
+\textbf{h-index:} 45, \textbf{Citations:} 8841.
 
 \subsection{10 research highlights}
 
 I now present my achievements through a selection of my publications, in
 reverse chronological order. My name appears in bold, names of PhD
-students I supervised in italics.
+students I supervised in italics. In all papers, I am the last author and the main supervisor.
 
 \begin{asparaitem}
-\item \todo{Relevant publications, with context} 
-% \fullcite can be used to fully cite a publication
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{shaj2023mts3}. Spotlight (3\% acceptance rate). 
+I developed a new multi-time scale state space model that defines the new state of the art for long-term prediction performance on many time-series prediction tasks. This approach provides a basis for the long-term prediction models used for learning object interaction models.
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{blessing2023information}.   I propose a new curriculum learning method for learning mixture of expert models, which can represent versatile behavior. The method will provide the basis for the hierarchical manipulation skill learning methods developed in SMARTeach.
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{li2023prodmp}. Citations: 11. I introduced a unification of ProMPs  and DMPs which inherits the advantages of both methods, i.e., smooth motion generation due to the dynamical system view and an easy way to obtain probabilistic motion representations. This work will serve as basic motion representation used in SMARTeach.  
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{otto2023deep}. Citations: 5. I introduced a new deep reinforcement learning algorithm for  motion primitive based policies which is producing smooth exploration by construction. 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{Gao_2022_CVPR}. Citations: 19. I present new benchmark sets for using meta learning on visual regression tasks. This paper underpins my experience in construction effective meta-learning algorithms for perception tasks. 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{otto2021differentiable}. Citations: 19. I propose a new on-policy gradient algorithm that is based on principled differentiable trust-regions layers as opposed to competing methods that are based on heuristics. Our work on MP-based RL is building on this algorithm. 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{volpp2021bayesian}. Citations: 26. This paper presents a new meta-learning algorithm introduces Bayesian aggregation into neural processes, which improves the uncertainty estimates of such techniques. 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{becker19RKN}. Citations: 80. A new recurrent network architecture that is tailored for dealing with uncertain observations. This work will inspire our work on object-interaction models when learning from uncertain, only partially observable datasets. 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{Huettenrauch19}. Citations: 211. I presented a new algorithm for reinforcement learning in swarm systems, i.e., systems with a large number of agents. It was the first paper that scaled RL to so many agents (up to 50). 
+
+\AtNextCite{\defcounter{maxnames}{99}}
+\item \fullcite{paraschos2013probabilistic}. Citations: 607. In this paper, I introduced  a new motion primitive framework called Probabilistic Movement Primitives (ProMPs) for probabilistic motion modelling. ProMPs are next to the Dynamic Movement Primitives (DMPs) the most commonly used MP framework. 
+
 \end{asparaitem}
+
+
 
 \subsection{Invited presentations}
 
@@ -22,4 +55,23 @@ Context or inviting institution}\\
   \bottomrule
 \end{tabular}
 
-\subsection{Awards}
+\subsection{Awards and Honours}
+\begin{itemize}
+\item {\textbf{Co-Speaker of DFG Research Group}}, AI-based Methodology for the Rapid Empowerment of Immature Production Processes,  2023 - ongoing,
+\item \textbf{4 best paper awards} (including IROS, RSS and Humanoids), \textbf{5 best paper finalists}, 2007 - 2022, 
+\item \textbf{Best Lecture Award}, Fachschaft Informatik, Darmstadt University of Technology, Best Lecture Award in the computer science department for the lecture {\em Robot Learning} in WS 2014/15
+\item \textbf{Scientific Challenge 1st Place}, Robocup Soccer 3D Simulation League 2014
+\end{itemize}
+
+\subsection{Major collaborations}
+\begin{itemize}
+\setlength\itemsep{1em}
+\item {\textbf{Tele-op + AR Interfaces}, Collaborations with Dr. Ayse Kucukyilmaz (Lecturer at the University of Nottingham), Ass. Prof. Rudolf Lioutikov (KIT), and Prof. Sören Hohmann (KIT).}
+\item {\textbf{Computer Vision:}, Collaborations with Prof. Markus Vincze (TU Wien), and Prof. Jürgen Beyerer (KIT + Fraunhofer IOSB).}
+\item {\textbf{Simulation:}, Collaborations with Prof. Luise Kärger (KIT) on using ML for enhancing simulations.}
+\item {\textbf{Reinforcement Learning:},
+Collaborations with Prof. Jan Peters (TU Darmstadt), Ass. Prof. Jeannette Bohg (Stanford), Ass. Prof. Oliver Kroemer (CMU), and Ass. Prof. Joni Pajarinnen (Aalto University).}
+\item{\textbf{Robotics Use Cases:}} My collaborations extend to specialists in various robotics applications, including Prof. Franziska Mathis-Ullrich (University of Erlangen) for surgical robotics, Prof. Tamim Asfour (KIT) on service robotics within the Jubot Project, and Prof. Gisela Lanza (KIT) and Prof. Jürgen Fleischer in the newly funded DFG collaborative research center (CRC) "Circular Factory," focusing on robot learning techniques for the circular economy sector. I also maintain strong connections with the UK nuclear robotics sector through figures like Prof. Rustam Stolkin (University of Birmingham) and Dr. Simon Watson (University of Manchester), a collaborator within the RAICAM MSCA doctoral training center.
+\item{\textbf{Industry}}{
+In the industrial sector, I have established relationships with Bosch Research and several local startups, including Artiminds (robotic integrator) and Telekinesis (computer vision, teleoperation).}
+\end{itemize}

@@ -1,8 +1,11 @@
 \documentclass{erc-B2}
 
 \input{../erc-common}
+\renewcommand{\thesection}{\alph{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 
 \usepackage{spreadtab}
+\usepackage{soul}
 \STmessage{false}
 \FPmessagesfalse
 \usepackage[autolanguage]{numprint}
@@ -11,41 +14,613 @@
 
 \usepackage{pgfgantt}
 
-\begin{document}
-\maketitle
-\input{../abstract}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{enumitem}
 
-\vfill\pagebreak
+
+\usetikzlibrary{positioning, arrows, automata}
+\usetikzlibrary{backgrounds, calc}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+
+% Subplots
+\usepackage{subcaption}
+% Set Margin of the caption
+\usepackage{caption}
+\usepackage{glossaries}% manage abbreviations
+\begin{document}
+\input{abbreviations}
+
+\maketitle
+%\input{../abstract}
+%\vfill\pagebreak
 
 % Use \section's and \input's as needed
+\section{State-of-the-Art and Objective}
+ \subsection{Motivation and Objectives}
 
-\section{Context and Vision}
-\label{sec:intro}
-\input{parts/intro}
+%SMARTeach realizes our vision of tackling three long-standing problems in robot manipulation: (V1) robots, that can understand, reason about and manipulate scenes with a large number of different objects, (V2) robots should be able to manipulate objects with various geometries, physical properties (rigid, deformable, articulated) and semantics and (V3) robots, that understand and follow instruction manuals to build intricate structures. Despite numerous breakthroughs in \gls*{ai} across various domains, we have not seen a parallel surge in the field of robotics to fulfill such visions. The reason lies in three substantial challenges inherent to \gls*{ai} and robotics. Firstly, data collection and labeling in robotics are frequently costly and specific to the task at hand. Secondly, successful models in \gls*{ai} require too much training data to fine tune for a specific task. Thirdly, the expertise needed to apply \gls*{ai} to particular robotic use cases is substantial, posing a significant barrier to adoption in industrial use cases.
 
-\section{Challenges}
-\label{sec:challenges}
-\input{parts/challenges}
+% SMARTeach takes aim at three long-standing visions in robot manipulation: robots that (V1) understand, reason about, and manipulate scenes with numerous diverse objects; (V2) handle objects with various geometries and physical properties (rigid, deformable, articulated); and (V3) comprehend and follow manuals for constructing complex structures. While \gls*{ai} has achieved massive strides in recent years, its promises in the realm of robotics have yet to be fully realized. I believe that this is mainly due to three core obstacles in the field of \gls*{ai} for robotics: data collection and labeling in robotics are often prohibitively expensive and specific to individual tasks; successful \gls*{ai} models usually require extensive training data, making them impractical for task-specific fine-tuning; and applying \gls*{ai} to specific robotic use cases demands significant expertise, creating a barrier to broad industrial adoption.
 
-\section{Objectives}
-\label{sec:objectives}
-\input{parts/objectives}
 
-\section{State of the Art}
-\label{sec:related}
-\input{parts/related}
+%Version A: SMARTeach confronts these limitations by empowering robots to continually learn and adapt by a close interaction with a human teacher while leveraging offline instruction sources such as instruction manuals. SMARTeach will further develop intuitive teaching interfaces that enable even unskilled individuals to gradually train new complex skills to robots, thereby dramatically simplifying the adoption of \gls*{ai} technology and in turn enabling our three visions for future robot manipulation. 
 
-\section{Methodology} 
-\label{sec:research}
-\input{parts/research}
+% To overcome these obstacles, I advocate for an integrated approach that combines intuitive task-specific data generation, fine-tuning of foundational knowledge, leveraging human feedback for continuous learning and adaptation, and the seamless integration of offline instructions with semantic and geometric knowledge into skill, perception, and prediction models. Our objectives include:
 
-\section{Impact}
+%Confronting these limitations necessitates a comprehensive and integrated research agenda that encompasses intuitive generation of task-specific data, fine-tuning of foundational knowledge, leveraging human feedback for continual learning and adaptation, and seamlessly integrating offline instructions along with semantic and geometric knowledge into skill, perception, and prediction models. Our project's objectives are therefore as follows:
+
+%\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=2em, itemindent=-1em, labelindent=-1em, labelwidth=*]
+% \begin{itemize}[leftmargin=*]
+%     \item \textbf{Objective 1: Streamline Human and Synthetic Data Generation}. Gathering enough data to learn new manipulation tasks is a key limitation for practical applications. I aim for faster and less resource-intensive robot adaptation by streamlining data generation. This includes developing intuitive interfaces for capturing demonstrations, corrections, and evaluative feedback for skill development, visual data annotations for precise \gls*{6d} scene reconstruction, and interactive simulation generation aided by \gls*{llm}.
+    
+%     \item \textbf{Objective 2: Few-Shot Adaptation of Foundational Representations}. Current foundational models used in robotics \cite{rt12022arxiv,rtx2023arxiv} or robot perception \cite{SAM} provide impressive performance over a large set of datasets but are hard to fine-tune to a specific task given the limited task-specific data that is typically available. I aim to develop few-shot learning algorithms to refine pre-trained foundational models for robot skills, robot perception, and world models for predicting object dynamics. This enables the use of foundation models for novel tasks requiring accurate scene understanding, dynamics models, and precise movement.
+    
+%     %\item \textbf{Objective 2: Advance Robot Manipulation Skill Representations}. Our goal is to develop scalable skill representations that efficiently adapt to scenes with numerous objects of diverse shapes, including deformable and articulated items. In order to be applicable for low-level action execution and long-term skill selection, these representations must fuse geometric and semantic scene knowledge. Moreover, we need representations acquirable from demonstrations, with further refinement through \gls*{rl} and human feedback.
+
+%     \item \textbf{Objective 3: Scaling-up Robot Skill-Learning Capabilities}. Current robot skill representations fail to capture the complexity of the envisioned manipulation tasks. We require hierarchical skill representations that can reflect the inherent abstraction levels in a manipulation task. For instance, at a higher abstraction level, this involves selecting the type of manipulation (grasping, pushing, inserting, etc.) and the target object. At a lower action level, it includes executing the manipulation of the target object. This representation needs to scale to numerous objects in a scene, adaptable to objects' geometry and physical properties, and generalizable to different end-effector tools, including high-dimensional end-effectors like 5-fingered hands.
+
+%     \item \textbf{Objective 4: Learning from Interactive Human Feedback and Offline Instructions}. Robots need to understand, learn from, and actively query human feedback such as kinesthetic and verbal corrections. They must be able to process evaluative feedback or offline instructions. SMARTeach will combine offline instructions, such as language and visual guides in instruction manuals, parsed into informative skill priors, with interactive feedback for rapid policy learning. This will reduce the reliance on hand-engineered reward functions, which are often brittle in real-world scenarios.
+
+%     %\item \textbf{Objective 2:} \textbf{Advance Robot Manipulation Skill Representations}.  The goal is to establish scalable skill representations that can efficiently adapt to scenes populated with numerous objects, accommodating diverse object shapes and geometries including deformable and articulated objects. Such representations need to be available on multiple layers of abstraction needed for low-level action execution as well as high-level skill selection and long-term planning. Hence, they need to fuse geometric knowledge and semantic knowledge of the scence into a consistent representation.  Our skill representations will be designed for acquisition directly from demonstrations, with further refinement achievable through \gls*{rl}, enriched by human feedback. 
+
+%     %\item \textbf{Objective 3:} \textbf{Interactive Refinement of Robot Perception, Prediction and Skill Models}. Through continuous interactive teaching, we will refine robot skills and perception models to enhance success rates in practical applications. Leveraging diverse feedback from human operators, our approach will query for new feedback when robots face tasks they cannot solve independently. Through continuous improvement and guidance from human operators, the robots will  incrementally improve its understanding of the environment, learn to predict complex object interactions, use this understanding to improve its skills and finally advance toward autonomy. %To offer a cost-effective approach also applicable to industry, we will distribute the supervision of a human operator across multiple robots, ensuring low failure rates by implementing human error recovery strategies when required.
+    
+%     %\item \textbf{Objective 4:} \textbf{Integration of Foundational Knowledge and Instructions}. By combining existing offline instructions, such as instruction manuals, with online human feedback, SMARTeach equips robots with comprehensive learning experiences, reducing the need for extensive domain expertise. We aim for robots to understand informative offline instructions, such as the visual guidance and language information contained in instruction manuals . Furthermore, foundational knowledge and representations will act as highly informative priors to bootstrap our perception and skill models, which will then be fine-tuned with task-specific knowledge through our interactive learning pipeline. 
+% \end{itemize}
+
+% \vspace{0.3cm} % Help add a pause here
+% I present three use cases demonstrating the algorithmic contributions, each adaptable to industrial settings. Our robots will perform (i) sorting and disassembling a cluttered box of diverse Lego pieces, including bricks, plates, beams, and gears [V1]; (ii) folding origami, involving intricate manipulations of deformable paper sheets with varying articulation degrees [V2], where instructions are from origami books or videos [V3]; and (iii) assembling intricate Lego structures following manuals from an unsorted box of Lego pieces [V1-V3].
+% %SMARTeach will lead in revolutionizing robotic skill, perception, and prediction models, expanding robotic technology's scope in various industries and service sectors. This innovative approach lays the groundwork for a new era of intelligent, adaptable, and user-friendly robotic solutions, rivaling human manipulation capabilities.
+% SMARTeach will develop the next generation of interactive learning algorithms for robotic skill, perception, and prediction models, allowing robotic technologies to expand into various industries and service sectors. 
+% Its innovative approach lays the groundwork for adaptable and user-friendly robotic solutions, which rival human manipulation capabilities.
+
+% Attempt by Balazs
+What will it take to translate the recent successes shown by generative artificial intelligence into the field of robot learning?
+While \gls*{llm} are already able to assist humans at work and at home, robotic assistants in all but the most specialized domains are still firmly beyond our technical capabilities.
+My vision is to develop robots that (V1) understand, reason about, and manipulate scenes with numerous diverse objects; (V2) handle objects with various geometries and physical properties (rigid, deformable, articulated); and (V3) comprehend and follow manuals for constructing complex structures.
+A central obstacle is the high sample complexity of \gls*{rl}, and its poor generalization capability to new tasks and environments, exemplified by the Sim2Real gap.
+In addition, robotic data is far more expensive, slower, and potentially more dangerous to collect than data in the form of text or code, as it requires robots interacting with the real environment.
+For these reasons, large transformer-based foundation models alone cannot realize this vision without further algorithmic and technological developments.
+
+To overcome these obstacles, I advocate for a multi-pronged approach that combines intuitive task-specific data generation, meta-learning of foundational representations for few-shot fine-tuning, hierarchical skill representations to counteract the increasing complexity of environments with many objects, and the efficient integration of human feedback and offline instructions for continuous learning and improvement of the robot's behaviour.
+My objectives are the following:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Objective 1: Streamline Human and Synthetic Data Generation}. Gathering enough data to learn new manipulation tasks is a key limitation for practical applications. I aim for faster and less resource-intensive robot adaptation by streamlining data generation. This includes developing intuitive interfaces for capturing demonstrations, corrections, and evaluative feedback for skill development, visual data annotations for precise \gls*{6d} scene reconstruction, and interactive simulation generation aided by \gls*{llm}.
+    
+    \item \textbf{Objective 2: Few-Shot Adaptation of Foundational Representations}. Current foundational models used in robotics \cite{rt12022arxiv,rtx2023arxiv} or robot perception \cite{SAM} provide impressive performance over a large set of datasets but are hard to fine-tune to a specific task given the limited task-specific data that is typically available. I aim to develop meta-learning algorithms for few-shot refinement of pre-trained foundational models for robot skills, robot perception, and world models for predicting object dynamics. This enables the use of foundation models for novel tasks where highly accurate scene understanding, dynamics models, and precise movement are required.
+
+    \item \textbf{Objective 3: Scaling-up Robot Skill-Learning Capabilities}. Current robot skill representations fail to capture the complexity of the envisioned manipulation tasks in environments with many, diverse objects. We require hierarchical skill representations that can reason at different levels of abstraction. For instance, a high level of abstraction selects the type of manipulation (grasping, pushing, inserting, etc.) and the target object, while a lower level of abstraction predicts the joint-level actions required to realize this. Only such representations will be able to scale to scenes with numerous objects, adapt to diverse object geometries and physical properties, and generalize to different end-effector tools, including high-dimensional end-effectors like 5-fingered hands.
+
+    \item \textbf{Objective 4: Learning from Interactive Human Feedback and Offline Instructions}. Hand-engineered reward functions not only expensive to design, but are often brittle in real-world scenarios. That is why robots need to understand, learn from, and actively query human feedback such as kinesthetic and verbal corrections. They must be able to process evaluative feedback or offline instructions. SMARTeach will combine offline instructions, such as language and visual guides in instruction manuals, parsed into informative skill priors, with interactive feedback for rapid policy learning. 
+\end{itemize}
+
+I present three use cases that will demonstrate the progress towards realizing the stated visions, each adaptable to industrial settings. Our robots will (i) sort and disassemble a cluttered box of diverse Lego pieces, including bricks, plates, beams, and gears [V1]; (ii) fold origami, involving intricate manipulations of deformable paper sheets with varying articulation degrees [V2], where instructions are from origami books or videos [V3]; and (iii) assemble intricate Lego structures following manuals from an unsorted box of Lego pieces [V1-V3].
+SMARTeach will develop the next generation of interactive learning algorithms for robotic skill, perception, and prediction models, allowing robotic technologies to leave simulation and find diverse applications in industry and the home. 
+Its innovative approach lays the groundwork for adaptable and user-friendly robotic solutions, which rival human manipulation capabilities.
+
+\begin{figure*}[t]
+    \centering
+    \resizebox{0.95\textwidth}{!}{\input{img/fig_one/fig1}}
+    %\includegraphics[width=0.95\linewidth]{img/fi}
+%    \vspace{0.5cm}
+    \caption{\textit{\small
+    SMARTeach is a pioneering research project that aims to significantly advance the field of robotics by developing scalable and adaptable robotic manipulation skills. This project combines the strengths of few-shot adaptation via meta-learning, advanced teleoperation, and AR technologies to facilitate intuitive human-robot interaction and rapid skill acquisition. By leveraging interactive human feedback and instructability, SMARTeach focuses on creating robotic systems that can efficiently learn and adapt to complex tasks in diverse environments, heralding a new era of intelligent and versatile robotic solutions\protect\footnotemark. %Illustration of SMARTeach: A bi-manual robot setup with dexterous hands is tele-operated by a human via an \gls*{ar} interface. The human operator provides demonstrations, corrections, pairwise comparisons and verbal instructions. These are integrated using interactive \gls*{rl}, meta learning, and Bayesian fine-tuning to update the foundational models used for the robot's skill, perception, prediction and reward models rapidly. The operator visualizes task knowledge through future plans, object positions, relations, and scene predictions via \gls*{ar}, and can adjust the robot's models with interactive feedback. The skill model captures manipulation task hierarchy, focusing on target object selection at a higher level and skill execution at a lower level. Both levels can be informed by visual language models that parse instruction manuals\protect\footnotemark.
+    }}
+    \label{fig:interfaces}
+    %\vspace{0.5cm}
+    \end{figure*}
+\footnotetext{Image for Lego manuals taken from \url{https://www.lego.com}}
+
+
+\subsection{Challenges, Limitations of State of the Art and Required Novelty}
+Recent years have seen significant progress in robot learning, yet a significant research gap remains before \gls*{ai} applications in robotics can begin to greatly impact industries and the service sector. In subsequent sections, I will describe specific challenges (C1 to C11) related to the objectives, examine the state-of-the-art and its limitations, and outline SMARTeach's novel contributions. Contributions from my lab are cited in \textbf{bold}.
+
+% \subsubsection{Objective 1: Streamline Intuitive Data Generation for Complex Tasks}
+
+\subsubsection{Objective 1: Streamline Human and Synthetic Data Generation}
+
+% \textls[-1]{\paragraph{(C1) Online Demonstrations Generation and Interactive Feedback for Complex Robotic Manipulation}}
+\paragraph{(C1) Generating Online Demonstrations and Interactive Feedback for Complex Manipulation Tasks}
+%using robot hardware are hard to obtain as we require robot execution data without interference by a human kinesthetic teacher while the human still needs to have precise control over the robot and sophisticated 3D perception of the scene. 
+
+\textit{Current interfaces for collecting demonstrations in robot learning are often unintuitive and lack interactive feedback capabilities, greatly impeding data collection for highly complex tasks.} 
+
+
+\textit{\textbf{State of the Art.}} 
+Kinesthetic teaching is widely recognized as a standard method for collecting data from humans in robot learning \cite{Wrede_Emmerich_Grünberg_Nordmann_Swadzba_Steil_2013, Ravichandar_Polydoros_Chernova_Billard_2020, Sukkar_Moreno_Vidal_Calleja_Deuse_2023}. However, due to inaccurate sensors, model errors, and uncertainty in real-world scenarios, giving precise control commands to robots during manipulation is challenging. 
+Furthermore, kinesthetic teaching requires the operator to be present in the robot's workspace, which creates safety issues and typically corrupts the sensor data, e.g. camera images. 
+Tele-operation is a promising alternative, allowing users to directly provide control commands without being near the robot, using devices like gamepads and motion controllers.
+While such methods have previously been used for crowd-sourced robot learning projects \cite{mandlekar2018roboturk}, they inherently limit the complexity of demonstrations due to their lack of immersive 3D telepresence capabilities. 
+Recent research uses \gls*{ar} glasses to provide immersive experiences \cite{Mullen_Mosier_Chakrabarti_Chen_White_Losey_2021, Rosen_Whitney_Phillips_Chien_Tompkin_Konidaris_Tellex_2020}. An \gls*{ar} interface allows users to directly manipulate visualizations, including translation, rotation, and scaling, within interactable bounding boxes, and has been show to enhance \gls*{6d} pose estimation of objects in real-time \cite{sahin2020review, firintepe2021ir}. However, precise is limited and relies on the accuracy and stability of hand tracking. 
+%Recently, we used tele-operation by kinesthetic teaching as a new control interface in \cite{jiang2023user}. In a study where users had to control a virtualized robot, we showed that this interface is more intuitive to use than other control methods, resulting in higher task completion rates. However, for more complex scenarios like data generation with bimanual tele-operation, \gls*{ar} remains in its early stages due to limitations in intuitive control, 3D tele-presence, and the absence of force feedback.
+
+
+\textit{\textbf{Required Novelty.}} Intuitive interfaces for complex bimanual manipulation are needed. Such interfaces should allow for precise, simultaneous control of both robot arms for delicate tasks, offer real scene visualization through \gls*{ar} glasses and provide a means for correcting skill execution. They should also enable feedback on the robot's scene understanding (e.g. semantic segmentation) and planned movements.
+
+\paragraph{(C2) Interactive Generation of Physics Simulations from Sensor Data.} 
+\textit{Creating a virtual twin simulation is vital for fast data generation and preliminary learning steps, but is usually time-consuming and has a high barrier to entry.}
+
+\begin{wrapfigure}[10]{r}{.2\linewidth}
+ \scalebox{0.95}{
+\begin{subfigure}[b]{.2\textwidth}
+    \centering
+    \includegraphics[height=1.25in,width=0.95\textwidth]{img/isaac/lego-isaac.drawio.png}
+     \end{subfigure}}
+     \caption{\small \textit{Stacking Lego bricks in simulation \protect\footnotemark}. 
+     }
+  \label{wrapfig:lego_isaac_sim}
+\end{wrapfigure}
+\footnotetext{Demo taken from \url{https://developer.nvidia.com/isaac-sim}}
+
+\textit{\textbf{State of the Art.}}
+Virtualization is a crucial tool in robot learning for faster generation of data for \gls*{il} \cite{jiang2023user, mandlekar2018roboturk} and \gls*{rl}  \cite{Das_Bechtle_Davchev_Jayaraman_Rai_Meier_2021, serhan2022push, Zenkri2022}. Omniverse IsaacSim \cite{mittal2023orbit} has emerged as a unified and well-suited simulation framework. It can simulate different types of dynamics, e.g. rigid, fluid, and continuum, and model various geometries, materials, and complex object interactions such as screwing \cite{narang2022factory} or putting together lego building blocks with impressive accuracy, as illustrated in Figure~\ref{wrapfig:lego_isaac_sim}. Recent research employs foundation models to allow users to generate objects \cite{shap-e} or even entire scenes more interactively through verbal instructions \cite{wang2023gen}. Yet, it is unclear how the knowledge base from foundation models and language models can be combined with real world sensor data to construct a scene. Moreover, in many simulators, the underlying simulated dynamics are highly simplified, but it has been shown that enhancing task diversity is important in robot learning \cite{fang2023active}. For more specific dynamics, tailored simulation tools \cite{abaqus} are needed, which are often computationally demanding and require a lot of technical knowledge. For example, for our use-case of paper folding, specialized mesh-based physics models can be used \cite{ThaiSH18,NamikiY15,ElbrechterHR12} to simulate sequential folds. 
+%Beyond time-series prediction models for robot and object dynamics, significant research explores paper models for robotic origami folding. Studies employ diverse approaches for simulation and control \cite{ThaiSH18}. Notably, a mesh-based spring-damper model succeeded in a two-handed robotic setup for sequential valley folds \cite{NamikiY15}. Another approach combines a marker-based real-time vision model with a physics model representing the paper's non-folded elastic structure and creases \cite{ElbrechterHR12}.
+Recently, data-driven simulators have emerged as a promising approach to address the high computational demands of such simulation engines  \cite{pfaff2021learning, sundaresan2022diffcloud, kandukuri2022physical, linkerhagnerFSM23}. %\todo{Can we add something about automatic mesh generation from point-clouds and why this sucks? @Philipp D.}
+
+% In this case, the simulator is usually modeled by a deep neural network and learned directly from simulation data \cite{pfaff2021learning,linkerhagnerFSM23} or raw sensor data \cite{sundaresan2022diffcloud,kandukuri2022physical} to approximate the dynamics of real environments.  Yet, creating a simulation for a specific task is still demanding effort as we have to create object models, including their geometry and physical properties.
+
+
+\textit{\textbf{Required Novelty.}} To apply virtualization to novel, complex tasks, we require methods that automatically generate faithful simulation environments consisting of object geometries and physics models of rigid, articulated, and deformable objects. Furthermore, the user should be able to to interactively modify and correct the scene by providing sensor data of the simulated objects or verbal commands.% and allowing the simulation to query specific object interactions to refine the models.
+
+
+\paragraph{Own Prior Work for Achieving  Objective 1}
+My group recently investigated kinesthetic tele-operation as an intuitive robot control interface, where a leader robot is moved by the human kinesthetically and the follower robot is moving accordingly \cite{Sing_teleop}. In a recent user study, we used this interface to control a virtualized robot system with a real physical leader robot. The virtual robot and its environment were visualized through \gls*{ar} glasses \cite{jiang2023user}. This system, compared with joysticks, hand tracking, and motion controllers, significantly outperformed these other methods in terms of success rates and intuitiveness (see Figure \ref{fig:AR_image}). We use this kinesthetic interface for data collection and benchmarking in the context of contemporary \gls*{il} algorithms \cite{David2024}. These initial results serve as a basis for the intuitive \gls*{ar} teleoperation system. In the area of simulation generation, my lab has introduced novel data-driven simulation methods that are grounded in real sensor data such as point clouds \cite{linkerhagnerFSM23}. To further improve these models, we also investigate deep \gls*{rl} methods for adaptive remeshing that provide more efficient meshes~\cite{freymuth2023asmr} to simulate on~\cite{wu2023learning}.
+\input{img/AR/AR_image}
+
+
+% \subsubsection{Objective 2: Advance Learning and Representation of Robot Manipulation Skills}
+ 
+\subsubsection{Objective 2: Few-Shot Adaptation of Foundational Representations}
+
+
+\paragraph{(C3) Few-Shot Fine-tuning of Foundation Models} 
+%\textit{While foundational robotics models encapsulate extensive high-level semantic knowledge, adapting them for specific low-level control tasks presents a significant challenge.}
+\textit{Current approaches to fine-tuning foundation models require a lot of data, consider single tasks individually and do not capture uncertainty in data and predictions.}
+
+\textit{\textbf{State of the Art.}} Foundational models \cite{bommasani2022opportunities} are large neural networks that are trained on a large and diverse dataset.
+They have attracted plenty of attention in robotics, where they serve in perception \cite{Radosavovic2022mvp, karamcheti2023voltron, SAM}, behavior learning \cite{rt12022arxiv, rt22023arxiv, rtx2023arxiv}, and beyond. As such models are also computationally demanding, knowledge distillation techniques \cite{Sun_2023_ICCV} have been used to form smaller models from large pre-trained foundational models. However, their direct application, especially in complex tasks, often requires fine-tuning \cite{yang2023foundation}, for example with low-rank adaptors \cite{hu2022lora}, to capture task nuances. 
+%Such fine-tuning can be performed using, for example, low-rank adaptors \cite{hu2022lora}, to capture task nuances. 
+This is effective with moderate datasets with hundreds to thousands of examples but does not scale well to our few-shot adaptation with just tens to hundreds of examples. Prompting is another way of fast adaptation of foundational models \cite{SAM}, the prompts need to be part of the training data and it requires learning additional prompt-encoders which can have a lot of parameters. 
+Yet, a principled framework that does not require prompt encoders for fast fine-tuning is provided by meta-learning. Meta-learning learns from multiple related tasks how to efficiently fine-tune to a specific task \cite{finn2017model, garnelo12018np} but has not been used yet for fine-tuning foundational models. Limited data and safety needs in robotics also demand well-calibrated models. Bayesian Deep Learning \cite{wilson2020bayesian} offers a theoretical solution, but its application to large models is complex \cite{seligmann2023beyond}. While meta-learning and Bayesian learning have been combined \cite{garnelo12018np, volpp2021bayesian, Volpp23}, their application remains limited to small-scale examples. 
+Foundation models are also often used as representations for policy learning \cite{yang2023foundation}. Here, the representation can be fine-tuned using self-supervised auxiliary loss functions such as a contrastive loss \cite{laskin20a}, predictive loss functions \cite{ContrastivePredictive,Becker2023archive} or masked prediction\cite{liu2022masked, Radosavovic2022mvp}.
+
+%\todo{Could we say something here about using self-supervised loss functions for training foundational models/representations?}
+%about objects, etc, more complex tasks require more specific models.  
+
+
+%in deep learning \cite{bommasani2022opportunities} and robotics 
+%\cite{rt12022arxiv,rt22023arxiv,rtx2023arxiv}. 
+%The latter are foundational models trained on a large collection of offline datasets from different robot domains. 
+%They typically use a transformer-based backbone and are trained on large collections of offline datasets from different robot domains using self-supervised training techniques such as predictive coding, CITE, or masked-autoencoding CITE and are trained on large collections of offline datasets from different robot domains. 
+%After training, they are used to predict actions from sequences of past measurements such as images. 
+%While such general models work well for relatively simple control tasks, e.g. picking, and endow robots with general semantic knowledge about objects, etc, more complex tasks require more specific models. 
+%Here foundational models can still provide prior foundational representations, but adaptation is necessary. 
+%A first approach to such adaptation is conditioning the model on task-specific information, \todo{make a bridge to meta-learning.}
+
+%A second approach is fine-tuning using task-specific data in a supervised manner CITE.
+%While supervising fine-tuning is well understood if the fine-tuning data has the same modality as the offline dataset, e.g., both are images CITE, it is unclear how to include more specific modalities such as segmentation masks, geometric data (point clouds), semantic information about object relations, or \gls*{6d} poses of objects.
+%While for some modalities foundation models are available (e.g. segmentation~\cite{kirillov2023segany}), for others that is not the case 
+%A third approach is \gls*{rl}, either based on an optimization criterion, such as minimal execution time or maximal energy efficiency, or from human feedback. 
+%In particular, \gls*{rl} from human feedback underlies many recent successes of \gls*{llm} \cite{Ouyang2022InstructGPT} but until now has not been used for training nor fine-tuning robotics foundation models.
+%\todo{somehow make the largest stretch ever and relate this to the vrkn paper?}
+
+
+%These models tend to work well for relatively simple control tasks such as picking and endow robots with a large amount of semantic knowledge about objects in the scene without the need for task-specific teaching.
+%However, for more complex and more specific object manipulations, these models can serve as prior foundational representation, but they need to be fine-tuned CITE. 
+%Here, approaches for learning task specific representations for robotics are also developed. %Most of them are based on self-supervised learning using either predictive representations CITE, masked auto-encoding CITE or predictive masking CITE.
+%Most of these approaches have been evaluated in an \gls*{il} context CITE on real robot setups, while representation learning approaches for \gls*{rl} are mainly concerned with simplified simulated scenarios. Major challenges in representation learning include the existence of task-irrelevant distractors CITE and how to model uncertainty in the presence of partial observability due to occlusions CITE TMLR Philipp. 
+%In perception, foundational models have been used for instance based scene segmentation \cite{kirillov2023segany}, yet, foundational models that are also incorporate geometric data such as point clouds, semantic information about object relations or \gls*{6d} poses of objects are so far missing in the literature \todo{check}. 
+
+%INCLUDE RLHF  instruct gp learning from human feedback AILP wip
+%Currently, most of the state-of-the-art \gls*{llm} are fine-tuned using \gls*{rl} from Human Feedback methods \cite{Ouyang2022InstructGPT}.  However, until now these methods have not be used for training nor fine-tuning robotics foundation models.
+
+
+%\textit{\textbf{Required Novelty.}} We require foundational representations that can leverage the prior information from vast offline real and synthetic datasets and can be fine-tuned with online human feedback in an efficient manner. Furthermore, holistic foundational models are required that can encapsulate perceptional information such as scene configurations of objects and semantic symbolic knowledge as well as serving as representation for action selection and execution, prediction and planning. 
+\textit{\textbf{Required Novelty.}} 
+To allow generalization from small per-task datasets, we require few-shot learning methods to fine-tune foundation models for multiple, related tasks, exploiting auxiliary self-supervised loss functions to further improve generalization in the downstream task. %To apply these methods in interactive learning scenarios, they also need to capture the model's uncertainty. 
+%While Bayesian Meta Learning techniques have shown success when training small models from scratch it is not clear how to exploit them for efficient fine-tuning of large foundation models. 
+As training foundation models is computationally demanding, methods for post hoc adaptation of pre-trained models are of particular interest. 
+%has to be put on methods that are suitable for
+
+%We require foundational representations that can leverage prior information from vast offline real and synthetic datasets and also allow for efficient adaption. 
+%To best exploit the capabilities of foundation models without fine-tuning, we can investigate and exploit connections to probabilistic meta-learning methods. 
+%Yet, for more complex tasks, fine-tuning based on supervised or \gls*{rl} is inevitable. For the former, we need methods to exploit data modalities, such as scene configurations of objects and semantic symbolic knowledge, that are not available for large-scale pre-training. 
+%For the latter, we need approaches to learn rewards from different forms of human feedback available in robotics and uncertainty-aware methods for \gls*{rl} using these and other rewards. 
+
+\paragraph{(C4) Continuous Fine-Tuning of Robot Perception}
+\textit{While existing robot perception methods, like \gls*{6d} pose estimators, are effective on training datasets, their generalizability to different scenarios, including new object categories, background changes, camera properties, and lighting conditions, is often limited. Additionally, developing a methodology for interactively fine-tuning these methods for specific use cases is still unresolved.}
+
+
+\textit{\textbf{State of the Art.}}
+Advanced scene understanding algorithms powered by foundational models \cite{SAM,DINOv2} have demonstrated impressive accuracy in semantic segmentation. These models have also been extended to instance-level segmentation and bounding box prediction \cite{liu2023grounding,SAM} and can even be used for open-set detection where the desired objects to be detected can specified via language \cite{liu2023grounding}. Yet, such foundation models have not been extended to \gls*{6d} pose estimation \cite{FFB6D, pvn3d, DuffhaussRAL}, crucial for many robotics tasks, and are also ignorant of the geometry of the scene. In terms of \gls*{6d} pose estimation, object category-agnostic algorithms \cite{liu2022gen6d,gao2023sad} can reduce the high data dependency \cite{FFB6D, pvn3d, DuffhaussRAL} of these algorithms but often result in compromised prediction quality. %A significant gap in current technology is that it is difficult to provide feedback about errors in the prediction which should be in turn used to refine the model. 
+\cite{Inerf,RePOSE,chen2020category} investigate the interactive refinement of \gls*{6d} pose estimation via online rendering, however, such functionality is not integrated in recent foundation models. %\todo{Investigate more papers on the online correction of \gls*{6d} pose and segmentation. Consult with experts like Rainer?} 
+Given that each object category essentially represents a unique dataset, meta-learning strategies \cite{finn2017model,Gao_2022_CVPR,volpp2021bayesian} are a promising path to accelerate learning for new object categories and to integrate online feedback. However, scaling these techniques to match the complexity of tasks at hand remains challenging \cite{Gao_2022_CVPR}. %Another image perception task which is relevant for learning manipulation skills is to predict semantic object relations \cite{He_2017_ICCV} such as a scene graph. Yet, we are not aware of large-scale foundational models for predicting such semantic object relations. 
+Additionally, robot perception models need to be tunable through weak online feedback, such as language-based inputs like "there are 3 objects in the scene". While language can be used to describe properties of objects \cite{liu2023grounding}, this has not been demonstrated so far to describe properties of the scene such as the number of objects or for semantic object relations. 
+
+%In the future, we aim to leverage large visual-language models for better scene understanding in the robotic scenario. For example, open-world object segmentation given text prompt with the total number of objects in the scene or grounding specific object segmentation using text-prompt to describe the object attribute.
+\todo{Conduct further research on the application of visual language models in perception tasks}
+
+\textit{\textbf{Required Novelty.}} We need perception models that effectively combine base knowledge from foundational models with real-time feedback from human operators about object poses, scene configurations, and semantic object relations. This requires significant advancements in meta-learning techniques to apply them to complex visual datasets, reducing computational demands while ensuring precision and accuracy for real-world robotics.
+
+\paragraph{(C5) Learning and Fine-Tuning Prediction Models of Object Interactions}
+
+% \begin{wrapfigure}[10]{r}{.47\linewidth}
+% \scalebox{0.95}{
+% \begin{subfigure}[b]{.47\textwidth}
+%    \centering
+%    \includegraphics[[height=1.6in,width=0.95\textwidth]{img/longterm/mts3-prop.pdf}
+%     \end{subfigure}}
+% \caption{Multi Time Scale Models~\cite{shaj2023mts3} can predict object interactions at multiple temporal abstractions, capturing fast short-term and slow long-term trends. } 
+% \label{fig:mts3}
+% \end{wrapfigure} Deleted because of space reasons...
+\begin{figure}[t]
+    \centering
+    \includegraphics[height=0.9in,width=0.95\textwidth]{img/longterm/predictions.pdf}
+    \caption{\small \textit{Multi-time scale models are critical for accurate long-term predictions in robotics as demonstrated in our prior work \cite{shaj2023mts3}. (left) Multi-time models \cite{shaj2023mts3} give highly accurate forward dynamics predictions for up to 12 seconds into the future. (right) State-of-the-art Transformer models like GPT struggle at these tasks.}}
+    \label{fig:pred}
+\end{figure}
+
+\textit{There is a lack of foundational object interaction models that work well for a wide variety of object geometries and physical properties and can be fine tuned to specific object instances. While models for simpler single object dynamics exists, effectively using these models in policy optimization is a complex, unresolved challenge.}
+
+\textit{\textbf{State of the Art.}} \gls*{gnn} are often used for learning mesh-based simulations of object dynamics, focusing on individual deformable objects \cite{pfaff2021learning} and interacting rigid objects \cite{allen2023learning}. Initial efforts to include point clouds \cite{linkerhagnerFSM23, shi2023robocook}, reconstruct meshes from sensor data \cite{longhini2023edo}, and adapt real-world data to simulations \cite{sundaresan2022diffcloud, antonova2022bayesian} are underway. Yet, all of these methods depend on mesh-based simulation data and often address simple dynamics or single objects. Moreover, it remains unclear how to adapt such \gls*{gnn} models to specific objects using little data, how to incorporate uncertain sensor feedback in the prediction and how to produce accurate long-term predictions, which is crucial if such models should be utilized for policy optimization. 
+Such properties have been explored for standard time-series models which are for example used for learning dynamics of complex robotic systems \cite{shaj2020acrkn}. Here, the community has employed state-space models \cite{gu2021efficiently, smith2022simplified, becker19RKN},some of which are tailored for uncertain observations using Kalman updates \cite{kalman1960,becker19RKN}, and transformer-based architectures \cite{vaswani2017attention,zhou2021informer,liu2022Transformer}. Fast adaptation to non-stationary dynamics due to unobserved latent effects have been addressed in \cite{shaj2022hiprssm,liu2022Transformer}, where ideas from meta-learning have been incorporated \cite{shaj2022hiprssm}. In terms of long-term prediction, standard auto-regressive models like \gls*{gpt} often produce poor results due to error accumulation over time \cite{lecun2022path,zeng2018learning}. This challenge is potentially addressed by non-auto regressive time-series modeling \cite{Zeng2022AreTE} or multi-time scale world models \cite{shaj2023mts3}, as shown in Figure \ref{fig:pred}. %Multi-time scale modelling (see Figure \ref{fig:mts3}) allows the possibility of effectively disentangling the object interaction dynamics into hierarchical abstractions, where lower level abstractions for example can capture fast, local interactions between nearby objects while higher levels can capture slower, global dynamics that emerge from the interactions of all objects in the system. \comment{That would be future work, does not fit here...}
+Yet, such advanced modelling techniques  are yet to be leveraged in geometric modelling of  object interaction dynamics  or model-based policy optimization. Also, capturing uncertainties in stochastic dynamics, including aleatoric \cite{becker19RKN} and epistemic uncertainty \cite{chua2018deep,becker2022uncertainty}, remains challenging.  %Additionally, these models often require extensive batch offline training and lack easy online data fine-tuning ~\cite{xian2021hyperdynamics}. 
+%\todo{say something about models for the composition of objects into single parts (assembly and disassembly)}
+
+\textbf{\textit{Required Novelty.}} Robots require foundational object dynamics models that are trained on a wide set of object geometries and physical properties and can adapt to a specific object when provided with only minimal sensor data. Moreover, these models require robust long-term prediction capabilities and need to provide well calibrated epistemic uncertainty estimates such that they are applicable to planning and policy optimization.  
+%This advancement necessitates integrating recent meta-learning techniques \cite{Volpp23} for rapid online adaptation with long-term prediction models \cite{shaj2023mts3} and \gls*{gnn} \cite{pfaff2021learning} for geometric predictions of the object's shape.
+
+\begin{wrapfigure}[15]{r}{.3\linewidth}
+ \scalebox{0.95}{
+\begin{subfigure}[b]{.3\textwidth}
+    % \centering
+    \includegraphics[height=1.6in,width=0.95\textwidth]{img/meta/latent1.png}
+     \end{subfigure}}
+     \caption{\small \textit{Uncertainty Representation in Bayesian Meta-Learning in our prior work ~\cite{Volpp23}: The \gls*{gmm} accurately captures uncertainties of the task distribution in a low dimensional latent space.   }} 
+  \label{fig:latent}
+\end{wrapfigure}
+\paragraph{Own Prior Work for Achieving Objective 2.} My lab has established significant expertise in meta-learning techniques \cite{volpp2021bayesian, Volpp23, Gao_2022_CVPR}, primarily related to enhancements for neural processes, which will be fundamental to the few-shot fine-tuning techniques for foundational robotics models developped in this project. In \cite{volpp2021bayesian}, my lab introduced an innovative context aggregation method using Gaussian conditioning, enabling more accurate uncertainty representation in meta-learned models. Building upon this, \cite{Volpp23} explored optimization-based aggregation through a \gls*{gmm} based variational inference, achieving state-of-the-art results in meta-learning for regression tasks while accurately capturing task uncertainties as visualized in Figure \ref{fig:latent}. The used \gls*{gmm}-based variational inference method \cite{arenz2022unified,arenz2020trust,arenz2018efficient} has also been developed by my group and belongs to the state of the art in variational inference. 
+Further, \cite{Gao_2022_CVPR} provided a comprehensive benchmark of various meta-learning techniques for visual regression tasks. %This study demonstrated that neural process architectures could surpass other methods, including widely known Model-Agnostic Meta-Learning (MAML) \cite{finn2017model}, in terms of performance.  
+Additionally, our work on interactive \gls*{rl} from human feedback can also be extended for fine-tuning foundation models \cite{taranovic2023ailp}. 
+
+\begin{wrapfigure}[14]{r}{.3\linewidth}
+ \scalebox{0.95}{
+\begin{subfigure}[b]{.3\textwidth}
+    \centering
+    \includegraphics[height=1.6in,width=0.95\textwidth]{img/ggns/object_dynamics_ggns.png}
+     \end{subfigure}}
+     \caption{\small \textit{Additional sensor information such as point clouds can ground learned simulator predictions as shown in our prior work \cite{linkerhagnerFSM23}}. 
+     }
+  \label{wrapfig:object_dynamics_ggns}
+\end{wrapfigure}
+
+My group can also build upon substantial knowledge in \gls*{6d} pose estimation, where we established state of the art estimators for multi-view \gls*{6d} pose estimation \cite{DuffhaussRAL,duffhauss22MV6D} and provided a novel category-agnostic \gls*{6d} pose estimation algorithm \cite{gao2023sad} that can already give pose estimates for novel categories after  10-20 annotated images of an unseen object. 
+%We have advanced in \gls*{6d} pose estimation. In \cite{duffhauss22MV6D}\todo{duffhausRAL}, we adapted a \gls*{6d} pose estimation method for multi-camera setups and symmetric objects. Effective on large datasets like YCB-Video \cite{xiang2018posecnn}, fine-tuning these models for smaller, specific cases is challenging. To address this, we developed a category-agnostic \gls*{6d} pose estimator \cite{gao2023sad} needing only 10-20 annotated images, though it lags behind larger models in accuracy. Our project aims to improve category-agnostic estimators beyond category-specific models.
+
+In model learning, we focused on state-space architectures for processing uncertain observations \cite{becker19RKN,shaj2020acrkn,shaj2022hiprssm, becker2022uncertainty}, embedding a Kalman filter in deep time-series models for end-to-end learning. We expanded these to hierarchical multi-time scale state-space models \cite{shaj2023mts3}, excelling in long-term prediction. Additionally, we explored \gls*{gnn} for learning mesh-based simulations, adapting them for point cloud data \cite{linkerhagnerFSM23}, as in Figure~\ref{wrapfig:object_dynamics_ggns}. %Our work also includes multi-agent \gls*{rl} strategies for remeshing \cite{freymuth2023asmr}, potentially speeding up object interaction models in this project.
+
+%\todo{Add \gls*{6d} pose estimation work from ning and fabian}
+%Furthermore, we have extensive expertise in learning latent dynamics models~\cite{becker19RKN} which produced state-of-the-art results in modelling long-term robot dynamics~\cite{shaj2023mts3} (see Figure \ref{fig:pred}) and uncertainty estimates~\cite{becker19RKN,shaj2023mts3}.
+%We additionally have prior experience in modelling dynamics of deformable objects using auxiliary sensor information~\cite{linkerhagnerFSM23}, and optimizing meshes for more efficient finite element simulations \cite{freymuth2023asmr}.
+%\todo{Add Learning object dynamics: Jonas and mention ASMR paper}
+
+
+
+\subsubsection{Objective 3: Scaling-Up Robot Skill Learning}
+
+\paragraph{(C6): Skill Learning for Scenes with Multiple Objects and Diverse Geometries.} 
+\textit{
+A significant limitation of current manipulation skill representations is in their restricted adaptability to new, complex scenes, particularly those involving a large number of objects.}% These representations often fail to capture smooth motions across varying time scales.}
+
+\textit{\textbf{State of the Art.}}
+\gls*{il} often uses low-level joint commands and extensive demonstrations \cite{David2024}. Recent methods, including transformers and diffusion models, focus on diverse human demonstrations and action chunking for long-term behavior prediction \cite{shafiullah2022behavior, chi2023diffusion, pearce2023imitating}. Yet, they struggle with scenes containing many objects \cite{David2024}. Some approaches \cite{zeng2018learning, David2024, zeng2020tossingbot, serhan2022push,rtx2023arxiv}, employ vision-based representations for multiple objects but are mainly limited to simple 2D table-top motions. Studies like \cite{zhu2023viola} suggest factorizing scene and operational skills in multi-object settings, leading to a modular manipulation framework but with restricted online adaptability.
+Contrasting robot-centric representation, some research focuses on object-centric solutions \cite{Jianfeng2023KVIL, mandlekar2023mimicgen}, offering better generalization to new object configurations. Yet, these methods typically show limited capabilities to incorporate online feedback. 
+To represent smooth trajectories and capture movement correlations, \gls*{mp} approaches \cite{schaal2006dynamic, paraschos2013probabilistic,li2023prodmp} are widely used in robotic manipulation tasks. The study in \cite{Jianfeng2023KVIL} merges object-centric methods with the via-point \gls*{mp} approaches \cite{zhou2019learning}. Given video demonstrations, this method learns manipulation trajectories of a single-object as the end-effector tool. While effective for different tool geometries, it lacks extension to scenes with numerous objects.
+
+% \comment{This work \cite{carvalho2022adapting} does not fit here despite its "object-centric" claim.}
+
+\textit{\textbf{Required Novelty.}} We need policies that mirror task complexities and efficiently scale to scenes with numerous objects. To do so, the decision making process needs to capture the inherent abstraction levels for a manipulation process. The higher-level decisions include the selection of manipulation skills, such as pushing and grasping, and the target object to manipulate. The followed goal-conditioned lower-level policy then executes the selected motions, leveraging the object-centric techniques and \gls*{mp} in the object's coordinate frame. %At the same time, the policy needs to track whether the high-level decisions and the manipulation trajectories need to be replanned depending on the current state of the manipulation. 
+%These primitives will be defined in the coordinate frame of the object being manipulated, ensuring adaptability and fluidity in the robot’s interactions with its environment.
+
+\paragraph{(C7): Scaling to High Dimensional Manipulators and Different Tool Geometries.} %\todo{This challenge highlights the problems with learning with a high-dimensional manipulator like a 5-fingered hand. We want to tackle this challenge by learning a low dimensional manifold}
+\textit{Current methods of learning from human demonstrations \cite{mandlekar2021matters} face challenges with high-dimensional manipulators like dexterous multi-finger hands, due to complex state and action representations. Additionally, policies for tool's usage often rely on a single tool's shape, ignoring the variance of the tool's geometry and the divergence in the scene.}
+
+\textit{\textbf{State of the Art.}}
+Robotic manipulation research mainly focuses on simpler grippers or hands with limited \gls*{dof} \cite{chen2023development, saloutos2023towards, cairnes2023overview}, which are suboptimal for detailed tool usage. Advanced manipulators like the Shadow hand provide greater flexibility and precision  \cite{negrello2020hands}. However, current methodologies struggle with their numerous actuated \gls*{dof}, restricting their use in complex manipulations \cite{liu2022herd, Li2022Survey, kadalagere2023Review}. \gls*{rl} algorithms for in-hand manipulations, although effective in simulations, often don't seamlessly transfer to real systems \cite{shadowhand}, as they are often limited to specific manipulations and single object shapes.
+Techniques like \gls*{il} and \gls*{rl}-based fine-tuning have been employed for policies involving dexterous hands \cite{Rajeswaran2018Dexterous}. The works in \cite{qin2022from, qin2021dexmv} have developed teleoperation systems that map human to robotic hands, enhancing \gls*{rl} policies in both simulations and real robots, yet these methods also show limited generalization across different object shapes.
+The main challenge in generalization is attributed to the lack of necessary data complexities \cite{navarro2023visuo}, particularly the tactile, geometric, and visual information. In tool usage, \cite{Jianfeng2023KVIL} takes account of the geometric relationship between the tool and the target object,  proving effective in quasi-static tool-object relations. However, it remains unclear how to adapt these methods for more complex scenes using the \gls*{rl} fine-tuning.
+%While dexterous hands define a very high dimensional control problem, it is well known that most human manipulation strategies live on lower-dimensional sub-spaces allowing, for instance, to learn models that map high dimensional grasp configurations into a lower dimensional grasp space \cite{starke2018synergy, starke2021tempsynergy, rivera2021synergy}.
+
+\textit{\textbf{Required Novelty.}} 
+We require methods that can exploit the relationship between scenes and high-dimensional end-effectors, including fingers and tools. 
+The underlying skill and scene representations need to consider the hand's geometry, tool's shape, and the distributed sensor inputs, such as touch \cite{ward2018tactip, lambeta2020digit, pan2022task}. This will facilitate the inference and generalize better for complex multi-object interaction strategies and the in-hand manipulations.
+
+
+% \input{img/MP/mp_fig}
+\paragraph{(C8): Data-Efficient and Smooth Fine-Tuning of Hierarchical Manipulation Skill Libraries.} 
+
+\textit{Smooth exploration in \gls*{rl} is crucial for safe real-robot execution and for human-robot interaction \cite{Losey2019}. Existing \gls*{rl} methods that generate smooth exploration require an excessive amount of samples \cite{raffin2021smooth, chiappa2023latent}. Additionally, the existing hierarchical \gls*{rl} techniques are only applicable to rather simple policy architectures.}
+
+\textit{\textbf{State of the Art.}} 
+Fine-tuning policies from \gls*{il} using \gls*{rl} is actively researched \cite{Zhu-RSS-18,pmlr-v155-julian21a,Rajeswaran2018Dexterous, ball2023efficient}, but often uses simple policy representations that induce unsmooth exploration noise. Methods for obtaining smoother exploration either use non-white noise \cite{eberhard2023pink} or limit the number of time-points new exploration noise is sampled for \cite{raffin2021smooth}. 
+A promising alternative solution is the use of \gls*{rl} algorithms that directly explore in parameter space of \gls*{mp} \cite{paraschos2013probabilistic,li2023prodmp}, resulting in smooth exploration trajectories \cite{li2023tcp,otto2023deep}. This approach has been extended in \cite{otto2023mp3} to allow for smooth replanning of MP policies. However, these algorithms suffer from sample inefficiency due to their on-policy nature.
+More data-efficient approaches require off-policy updates \cite{lillicrap2015continuous, haarnoja2018soft, fujimoto2018addressing}, ideally leveraging from offline datasets \cite{kumar2020conservative,kostrikov2021offline,ball2023efficient}. Another prominent method to improve data-efficiency in goal-driven \gls*{rl} is hindsight experience replay \cite{NIPS2017_453fadbd}, which relabels the desired goals to be the reached final states. 
+\todo{This should move to C10 - Shared control strategies in off-policy \gls*{rl} add user-guidance, enhancing task constraint satisfaction and learning efficiency.} 
+However, these approaches have not yet been integrated within MP-based policies and hence do not show smooth exploration behavior.
+
+In terms of learning hierarchical policies, \cite{gupta2019relay} used hierarchical \gls*{rl} to refine multi-state, long-horizon robotic tasks in simulations using unstructured, imperfect demonstrations. The work in \cite{huang2023reparameterized} introduced an objective for training rather simple hierarchical policies using a lower bound objective similar to \cite{celik2022specializing}. More complex hierarchies have been used in \cite{hafner2022deep} and \cite{xu2023iql}, which have shown promising results in solving long-horizon tasks in online and offline settings, respectively. These methods learn to divide long-horizon tasks into latent sub-goals via manager policies operating at a coarse timescale. A lower-level goal-conditioned worker policy is responsible for achieving the sub-goals. However, these methods were demonstrated on simple simulated tasks and have not been integrated with \gls*{mp} architectures nor object-centric hierarchies.
+
+
+\textit{\textbf{Required Novelty.}} We require hierarchical \gls*{rl} methods that can utilize smooth skill exploration and update the policy architecture efficiently, for example, by leveraging off-policy policy updates and offline datasets.  These methods must be extended to the complex hierarchical policy structure envisioned in this project, consisting of object and skill selection policies and goal-conditioned object-centric skill execution. %It is essential to extend \gls*{rl} algorithms capable of learning smooth skill representations to off-policy and model-based offline \gls*{rl} methods. This advancement will provide the necessary data efficiency for fine-tuning on real robotic systems, overcoming the limitations of current approaches.
+
+\paragraph{(C9): Robust Pre-Learning in Simulation and Sim-to-Real Transfer.}
+\textit{\gls*{rl} algorithms often exploit inaccuracies in physical simulation models, leading to optimal policies with unnatural or unintended behaviors \cite{zhao2020sim2real}. Policies learned in simulation struggle to adapt to real-world systems due to dynamics discrepancies.}
+
+\textit{\textbf{State of the Art.}} There are several methods to reduce the sim-to-real gap. The most common technique is domain randomization \cite{tobin2017domain}, which introduces a broad spectrum of dynamics during learning to enhance policy robustness. Employing maximum entropy strategies in optimization can also prevent policy overfitting on specific solutions \cite{eysenbach2022maximum, tiboni2023domain}. Continuously adapting simulation models with real sensor data is another effective approach \cite{clavera2018learning}.
+In cases where the simulations contains learned models, one can fine-tune them to better match real-world conditions \cite{song2020learning}. For example, Robocook \cite{shi2023robocook} fine-tuned a learned \gls*{gnn}-based dynamic model to successfully make dumplings in the real world. However, it's still unclear how to manage a significant sim-to-real gap, especially for complex, multi-step tasks.
+
+\textit{\textbf{Required Novelty.}} We need methods capable of transferring maximum information from simulation to the real world, despite potential significant differences in control signals. For example, identifying multiple solutions in simulation may enhance the chances that at least one can be successfully transferred and fine-tuned. Moreover, behaviors optimized in simulation can be instrumental in inferring shaped reward representations, thus expediting interactive fine-tuning on the real system.
+%Moreover, an efficient use of simulation requires intuitive reward function adjustments to counteract unnatural behaviors arising from simulation errors.
+
+
+\input{img/MP/mp_fig}
+\paragraph{Own Prior Work for Achieving  Objective 3} My lab has significantly contributed to robotic skill learning and representation enhancements. We introduced \gls*{promp} \cite{paraschos2013probabilistic}, a widely used movement representation in robotics. \gls*{promp} integrate key features into robotic motion, like movement modulation through conditioning and capturing motion uncertainties. We expanded this by combining \gls*{promp} with \gls*{dmp} \cite{schaal2006dynamic, ijspeert2013dynamical}, leading to the method of \gls*{prodmp} \cite{li2023prodmp}. This unification brought together the advantages of dynamical systems approaches, enabling the generation of smooth trajectories from specified initial conditions, as illustrated in Figure \ref{subfig:mp_replan}-\ref{subfig:robot_pick}. Our expertise extends to \gls*{il} for versatile skills, developing new dataset benchmarks \cite{David2024}, and creating a curriculum-based algorithm for learning deep mixture of expert policies \cite{blessing2023information}.
+
+In \gls*{rl} for skill-based representations, my lab has developed innovative episodic \gls*{rl} algorithms for \gls*{mp} \cite{otto2023deep, otto2023mp3}, demonstrating superior exploration by operating within the parameter space of the \gls*{mp}. Originating from our trust region policy search algorithm \cite{otto2021differentiable}, initially applied to \gls*{promp} and later to \gls*{prodmp} \cite{otto2023mp3}, this method facilitates smooth replanning of trajectories during motion primitive execution. We also applied \gls*{rl} to active segmentation \cite{serhan2022push} and mechanical search tasks \cite{Zenkri2022} in cluttered heaps using top-view images and simple 2D pushing primitives. Our recent study \cite{celik2022specializing} developed an \gls*{rl} approach to create versatile skill libraries with individual curriculums per skill component, proving effective in complex tasks like robot table tennis, as seen in Figure \ref{subfig:mp_tt}. We further extended this curriculum method to versatile solution learning in imitation settings \cite{blessing2023information}. The \gls*{prodmp} and hierarchical mixture of expert policies form the foundation for the hierarchical, object-centric manipulation skill representations we aim to develop in this project.
+
+\subsubsection{Objective 4: Learning from Interactive Human Feedback and Offline Instructions}
+
+\paragraph{(C10) Learning Generic and Transferable Reward Representations from Multiple Feedback Sources}
+\textit{Current methods for learning reward functions from human feedback require many feedback queries, struggle to generalize to new scenarios, and cannot integrate various feedback sources into a unified reward representation.}
+
+\textit{\textbf{State of the Art.}}
+A major challenge in using \gls*{rl} for skill fine-tuning is creating an accurate reward function that defines the task. This often requires significant \gls*{rl} expertise and task-specific knowledge, plus extensive fine-tuning. \gls*{rl} from human feedback addresses this by learning reward functions from diverse sources like demonstrations \cite{Takayuki2018ImitationLearning}, pairwise comparisons \cite{wirth2016PrefRL,ChristianoNIPS2017}, scorings \cite{Garrett2018DeepTamer}, corrective feedback \cite{Losey2022PCorrections}, or verbal instructions \cite{Pratyusha2020CorrectingNLF}. While most research focuses on single feedback types, some approaches combine two, like merging demonstrations with pairwise comparisons to refine rewards \cite{taranovic2023ailp}.
+\todo{https://journals.sagepub.com/doi/full/10.1177/02783649211041652}
+However, demonstrations are typically static, offline datasets, and usually not dynamically extendable \cite{taranovic2023ailp}. 
+%Kinesthetic corrections have been explored \cite{Losey2022PCorrections}, predominantly for straightforward trajectory following tasks, often without the complexity added by tele-operation interfaces. \todo{Verify this assertion}
+Current methods learn task-specific reward representations based on state variables, limiting transferability to similar tasks and requiring substantial feedback for effective learning \cite{brown2019drex, Biyik2018BatchPref}. Using more generic geometric features might reduce feedback needs \cite{freymuth2022vigor}, but has been limited to simpler tasks as extracting generic geometric features for real-world applications is challenging. Some \gls*{il} approaches tackle this by employing keypoint detection and tracking on visual data to obtain multi-object trajectories for policy learning \cite{Jianfeng2023KVIL}. %Interactive learning from demonstrations has been applied to robot fleets \cite{datta2023iifl}, yet again focusing primarily on demonstrations as the sole feedback modality.
+
+\textit{\textbf{Required Novelty.}} SMARTeach is focused on advancing \gls*{rl} from human feedback methods that continuously refine the reward function using diverse feedback types, such as demonstrations, pairwise comparisons, and corrections. Exploring different correction modalities for various task abstractions is key, including kinesthetic corrections through tele-operation for skill execution, and verbal corrections for skill and target object selection. Furthermore, our goal is to develop generic reward representations that can generalize to new tasks and configurations, leveraging 3D geometric knowledge of the scene. %This approach will enable more effective and adaptable learning across a range of manipulation tasks.
+
+
+\paragraph{(C11) Incorporating Visual and Language Instructions as Behavioral Prior}
+\textit{Current instructability methods employing \gls*{llm} focus mainly on language instructions, constrained by their complexity due to offline training. These methods have not yet been developed to accommodate more informative multi-step visual instructions, commonly found in instruction manuals.}
+
+\textbf{\textit{State of the Art.}} The rise of \gls*{llm} has generated interest in using language instructions for robot learning \cite{saycan2022arxiv,Pratyusha2020CorrectingNLF,nair2021learning}. Most research focuses on task descriptions involving object interactions, like "go to the left of the blue can" \cite{Pratyusha2020CorrectingNLF}. Some methods integrate language instructions into the \gls*{rl} process as contextual policy inputs \cite{nair2021learning}, for task generation in policy acquisition \cite{ge2023policy}, or to create reward functions for specific tasks \cite{yu2023language}. However, these approaches mainly use static instructions that ignore the robot's ongoing behavior, like providing language-based corrective feedback.
+Regarding visual instructions from manuals, there is limited prior work directly tackling this challenge, except in video games \cite{wu2023read}, where only text-based manuals are considered. Other relevant methods like using sketches of target configurations for scene alignment \cite{Sundaresan2023RTSketch} employ GANs \cite{goodfellow2014gan} to convert sketches into realistic scenes for comparison. Although this approach shows improved generalization over image-based methods, it usually concentrates on simple, single object rearrangements.
+\todo{\cite{wang2022translating}}
+
+% In the context of verbal-based policy, fine-tuning pre-trained vision-language foundation models is also a popular approach to acquiring generalized policies \cite{ge2023policy}. However, for tasks that require more precision, applying these strategies often involves extensive fine-tuning of the policies on the real system. \todo{This rather fits foundational models or instructions - move to different section}
+
+\textit{\textbf{Required Novelty.}} We require new methods to parse, segment, and understand complex offline instructions, like those in instruction manuals. This entails developing novel training datasets with such manuals to fine-tune existing visual language models, serving as foundational priors for skill and object selection. Beyond creating offline datasets of instruction manuals, we also need methods to correct misinterpretations in instructions, integrating interactive corrective feedback into the learning architecture.
+
+\begin{wrapfigure}[14]{r}{.47\linewidth}
+ \scalebox{0.95}{
+\begin{subfigure}[b]{.47\textwidth}
+    \centering
+    \vspace{-0.25cm}
+    \includegraphics[height=1.6in,width=0.95\textwidth]{img/ailp/ailp_scheme.pdf}
+     \end{subfigure}}
+     \caption{\small \textbf{Our prior work on Adversarial \gls*{il} with Preferences~\cite{taranovic2023ailp}. Our method allows for learning reward representations from by combining demonstrations and pairwise comparisons (preferences) provided by the user. The reward representation is used to continually update the policy using \gls*{rl}. }} 
+
+  \label{fig:AILP}
+\end{wrapfigure}
+\paragraph{Own Prior Work for Achieving Objective 4} We have extensive experience in incorporating human feedback into the \gls*{rl} process, particularly through pairwise comparisons \cite{wirth2016PrefRL, wirth2017PrefSurvey, pinsler2018PrefGrasp}. A key work is our innovative method to merge demonstrations and preferences into a single reward representation \cite{taranovic2023ailp}, shown in Figure \ref{fig:AILP}.
+This method substantially reduces the need for preference feedback by using more informative demonstration data. Additionally, we pioneered a method for learning reward representations from geometric descriptors of manipulations, demonstrating that these descriptors generalize better than standard state features \cite{freymuth2022vigor}.
+
+\section{Methodology}
+The SMARTeach project is organized into five interconnected \gls*{wp}, each aligned with one of the four objectives. WP1 focuses on improving the intuitiveness and scalability of robot data generation interfaces, combining \gls*{ar}, teleoperation, and interactive simulation generation. WP2 is dedicated to developing novel meta-learning techniques for few-shot adaptation of foundational models, enhancing perception, predictive modeling, and integrating online user annotations and corrections. WP3 aims to advance the learning of manipulation skills through hierarchical skill representations, employing off-policy and model-based \gls*{rl} for skill fine-tuning, addressing sim-2-real transfer, and learning with dexterous manipulators.
+WP4 is dedicated to improving the interactive fine-tuning of manipulation skills using real-time human feedback and offline instructions like manuals. WP5, the final package, focuses on implementing and evaluating high-impact use cases, and conducting extensive user studies to assess the effectiveness of the developed technologies.
+%Together, these WPs form a cohesive approach to revolutionizing robot learning and teaching, setting new standards in the field of cognitive robotics.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{WP1: Enhancing Intuitiveness in Robot Teaching}
+\subsection{WP1: Collecting human and synthetic data}
+WP1 focuses on creating intuitive robot data generation interfaces, utilizing teleoperation and \gls*{ar} technologies, and enhancing the simulation generation process. Building up on our past achievements in intuitive teleoperation interfaces with \gls*{ar} \cite{jiang2023user}, the goal is to develop bimanual interactive teaching platforms suitable for industrial cobots (like Franka Panda arms) and the dexterous Shadow platform. WP1 will also concentrate on designing user interfaces for efficient annotations and corrections of the robot’s scene understanding, and correcting skill execution and selection models.  Each robot platform will have a virtual twin for teleoperation and data collection in simulated environments. To foster the use of simulation, SMARTeach will also develop novel interfaces and  methods that can automatically generate virtual twin environments from sensor data and interactive human feedback. 
+%The developed interfaces' effectiveness and intuitiveness will be rigorously evaluated against current standards in extensive user studies (see  WP5), informing our human-centric design. 
+%This WP comprises the following tasks:
+
+\begin{enumerate}
+\item \textit{\textbf{Bimanual Interactive Manipulation Platforms:}} I plan to develop bimanual teleoperation systems with \gls*{ar} capabilities for Franka panda cobots with parallel jaw grippers and the dexterous Shadow platform \cite{shadowrobotShadowRobot} featuring 5-fingered hands. For the Franka platform, I will extend our previous work \cite{jiang2023user} to bimanual setups. With the Shadow, I will incorporate Shadow Robotics' haptic glove interface with \gls*{ar} for intuitive remote tele-presence. Differing from my work using virtual environments \cite{jiang2023user}, real sensor data, such as point-clouds and camera images, need to be streamed into \gls*{ar} glasses for a full 3D perception of the physical environment relative to the leader robot. User studies in WP5 will evaluate success rates and intuitiveness against current standards. Additionally, physics simulations of both platforms will be created in Isaac Sim \cite{mittal2023orbit}, directly linked with the \gls*{ar} teleoperation system, to enable low-cost, replicable data collection in virtual environments.
+\item  \textit{\textbf{Auto-generated Physics Simulators:}} In this task, we aim to auto-generate simulations of specific scenarios using sensor data of involved objects, integrating interactive human feedback and language descriptions about the objects' physical and semantic properties. This process involves auto-generating meshes and physical properties from collected sensor data and annotations, fused with language-based representations to include verbal object descriptions, streamlining their import into simulation environments.
+Our approach will leverage Isaac Sim \cite{mittal2023orbit} as a physical prior and also incorporate neural networks object dynamics models from WP2.c to enhance the physics simulation's accuracy. Crucial to this process is the interactive involvement of the human operator, facilitated through the comprehensive \gls*{ar} annotation and correction pipeline established in WP1 and WP2. Operators will actively guide the simulation generation, identifying and integrating new objects into the scene and annotating their semantic properties.
+For example, if a simulation needs one object to be inserted into another, the operator can indicate this requirement. The system will then automatically optimize the shapes and characteristics of these objects for a realistic simulation.
+
+
+\item \textit{\textbf{\gls*{ar} Interfaces for Real-Time User Feedback:}} Enhancements to the \gls*{ar} interface will include improved visualization and interactive correction capabilities for the robot's perception. This task involves correcting the visualized semantic segmentation, refining \gls*{6d} pose estimation, and clarifying object relations. Users will be able to modify semantic segments and add unrecognized objects to the robot's scene model, as well as interactively correct estimated \gls*{6d} poses through hand-gestures via \gls*{ar} (see WP3.a). 
+%\item \textit{\textbf{Interfaces for Skill Correction:}} 
+In terms of skill correction, we plan to develop algorithms for smooth intervention and correction of skill executions (see skill libraries in WP3). This involves displaying future skill trajectories in the \gls*{ar} interface and implementing kinesthetic corrections via teleoperation for our Franka arm setup. In this setup, motion can be slowed down to aid correction. For the Shadow platform, controlled by motion-tracked gloves, users will have the ability to pause motion execution and assume control by aligning their gloves with the robot's current position.
+Additionally, we will develop interfaces for skill selection supervision and correction. These interfaces will allow operators to choose and modify visualized manipulation plans in \gls*{ar}.%, including the prediction of manipulation outcomes (as outlined in WP2).
+\end{enumerate}
+\textbf{\textit{Expected Outcome:}} \textit{WP1 aims to transform interactive data generation in robotics by employing \gls*{ar} tele-operation from a human operator and auto-generating synthetic data. This approach is expected to significantly reduce the time needed for data collection compared to current interfaces. Additionally, the \gls*{ar} interface is designed to set new benchmarks for intuitive robot tele-operation, enabling more complex remote operations and making it more accessible for unskilled operators.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \subsection{WP2: Interactive Learning for Enhanced Perception and Modelling.}
+\subsection{WP2: Few-Shot Adaptation of Foundational Representations}
+In WP2, we aim to develop adaptive foundational models that utilize extensive offline datasets and are receptive to online user annotations and corrections. These adaptive foundational models  will be used as basis for enhancing the robot perception and object dynamics prediction models. In terms of perception, we will refine the robot's scene understanding using the operators online feedback and annotations, including \gls*{6d} object poses, instance-level segmentations, and semantic object relations, along with predictive geometric modeling. %Key to WP2 is the integration of neuro-symbolic representations into these models for predicting semantic scene graphs, crucial as state inputs for the object-centric manipulation skill libraries slated for development in WP3. 
+In terms of prediction models, we plan to learn foundational object dynamics models that can generalize to different object geometries and physical properties, covering a spectrum from rigid to deformable and articulated objects, leveraging our prior work on \gls*{gnn}-based simulators. This WP comprises the following tasks:
+\begin{enumerate}
+% \item \textit{\textbf{Online Integration of User Annotations and Corrections:}}
+\item \textit{\textbf{Meta-Learning for Fine-Tuning Foundation Models:}} This task will lay the basis for few-shot fine-tuning techniques of large pre-trained foundational models \cite{SAM,rtx2023arxiv,rt22023arxiv}  using  Bayesian meta-learning algorithms \cite{volpp2021bayesian,Volpp23}. 
+We will consider many small datasets for different related tasks (different manipulations, different objects) obtained with our \gls*{ar} interface. 
+We will enrich the pre-learned foundational representations with latent task descriptors, extracted for each task-specific dataset through advanced variational inference techniques with \gls*{gmm} \cite{arenz2020trust, arenz2022unified} developed in our prior work. We will extend these algorithms to more computationally efficient amortized inference to keep the computation tractable.
+Due to the use of optimization for obtaining the task descriptor, we can use heterogenous datasets that contain different types of annotations, such as \gls*{6d} pose estimates and semantic annotations for perception models, as long as we can compute likelihoods for each of the data-points. 
+As including the foundational representation in a meta-training framework might be computationally challenging due to the model size, we will experiment with knowledge distillation techniques \cite{Sun_2023_ICCV,NEURIPS2021_376c6b9f} on the large amount of unlabelled available also for new tasks to extract a task-specific knowledge base from the foundational model which can be used as meta-prior.
+Given a new task, the foundational model can then adapt to the new task already after seeing only few samples by inferring the task descriptor. %We will further investigate how to adapt also the pre-learned architecture by combining fine-tuning in a sub-space \cite{hu2022lora} with Bayesian fine tuning \cite{seligmann2023beyond}. Such a Bayesian fine-tuning technique will provide uncertainty-aware models that are also well calibrated.  
+
+\item \textit{\textbf{Foundational Geometry-Aware Perception Models:}} 
+For perception, we will build upon WP2.a and explore the use of task descriptors for scenarios, scenes and objects. The scenario based task descriptor will be valid for all scenes of the same scenario while the scene descriptor can store information about the number of objects and their relation in the scene and the object descriptor can store object specific properties. Our architecture will combine these task descriptors with foundational instance-level segmentation models \cite{SAM,liu2023grounding}, adapting them based on user feedback, such as correcting mis-detected objects. We will extend these foundational models to geometric representations, fusing the foundational pixel-based features with 3D point clouds and utilize this representation for developing novel, category agnostic \gls*{6d} pose estimation algorithms. Here, the object-level task descriptors can be used to fine tune \gls*{6d} pose-estimates, building on our prior work on category agnostic \gls*{6d} pose estimation \cite{gao2023sad}. Further, I plan to consider semantic annotations of object relations provided by the user and extend the foundational perception models to provide such predictions. The underlying learned representation will hence contain the geometric and semantic knowledge of the agent about the scene and will therefore be used to inform the state representation of the the high-level skill and object selection policies from WP3.a. The additional auxiliary loss functions for learning this representation will provide a better generalization for the learned policy representations \todo{yang2023foundation}. 
+ 
+%semantic annotations in terms of object relations of the scene provided by the user . Here, we will 
+%We plan to forge representations that are robust and readily transferable across robotic systems using neural-symbolic architectures. These will be primed to adapt object relationships dynamically with user feedback. We will build on the foundational work from WP2.a, enhancing it with algorithms that deduce object relations of recognized objects within scene contexts. Training will involve large offline datasets and bespoke synthetic datasets crafted in our photo-realistic simulation environments, complemented by user annotations from \gls*{ar} interfaces during our studies. These comprehensive data sources will ensure our neuro-symbolic models are catering to the nuances of real-world applications.
+
+%Additionally, meta-learning techniques will be employed to refine foundational segmentation models \cite{SAM}, adapting them based on user feedback, such as merging or dividing segments. 
+
+
+\item \textit{\textbf{Foundational Object Interactions Models:}} %Our focus will be on enhancing representation learning by developing models that predict changes in position and geometry of various objects—rigid, deformable, and articulated—during manipulation. Building on our previous work on utilizing \gls*{gnn} for object dynamics prediction from point-clouds \cite{linkerhagnerFSM23}, we plan to predict object deformations from point-cloud inputs. Specifically, from a given point-cloud of a scene and its segmented objects, our models will forecast the dynamics of mesh-points under robotic manipulation.
+We will develop foundational \gls*{gnn} using a diverse library of synthetic object meshes and interactions, ranging from rigid to deformable and articulated objects. Our goal is to create foundational simulation models that surpass the limitations of single-task learning models. We will use meta-learning techniques to refine the inference of the geometric and physical properties of objects in the scene from uncertain sensor observations, where each object is considered as separate meta-learning task. Here, we will again build upon few-shot adaptation methods developed in WP2.a and our prior work on long-term prediction models. 
+Furthermore, we will integrate multi-time scale models \cite{shaj2023mts3} into the \gls*{gnn}-based object dynamics models. As the object dynamics are crucial for skill execution, the underlying representation of the foundational object dynamics models will be used as representation \cite{yang2023foundation} for the low-level skill execution policies obtained in WP3.a , similar to our prior work on predictive representation learning from images \cite{Becker2023archive}. 
+%This development aims for more accurate and comprehensive simulations, closely mirroring real-world physical interactions and dynamics.
+\end{enumerate}
+\textbf{\textit{Expected Outcome:}} \textit{WP2 will provide foundational representations that are few-shot adaptable with the use of meta-fine tuning.  These techniques will be applied for scene understanding and object prediction models, utilizing visual, geometric and semantic data. These advanced representations will encompass crucial geometric scene knowledge, like \gls*{6d} object poses, and detailed semantic information about object relationships.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \subsection{WP3: Scaling Up Manipulation Skill Learning.} 
+\subsection{WP3: Scaling-up Robot Skill-Learning Capabilities}
+
+In WP3, SMARTeach is advancing the state-of-the-art in robotic manipulation through the development of hierarchical skill libraries. Grounded in our extensive research in \gls*{mp} and \gls*{il}, these libraries are engineered to accommodate a wide spectrum of manipulative tasks, ranging from basic object handling to the detailed in-hand manipulation with 5-fingered hands. The key innovation in WP3 is the integration of end-effector and tool geometry within the manipulation skill representations, enabling the system to adapt to varying object geometries and interaction dynamics.
+WP3 focuses on the application of cutting-edge \gls*{rl} techniques to refine these skill libraries. By leveraging off-policy and offline \gls*{rl} algorithms, we aim to significantly enhance the data efficiency of the skill refinement process, a crucial factor in real-world deployments. The integration of simulation-based pre-tuning, informed by our pioneering work in versatile skill discovery, will serve as a robust foundation for these algorithms, ensuring a seamless sim-to-real transfer.
+
+\begin{enumerate}%[noitemsep, topsep=0pt, partopsep=0pt, label=\alph*), leftmargin=0em, itemindent=1em, labelindent=1em, labelwidth=*]
+\item \textit{\textbf{Hierarchical Manipulation Skill Libraries:}}  Leveraging our expertise in \gls*{mp} \cite{paraschos2013probabilistic, li2023prodmp}, we aim to develop \gls*{il} algorithms for hierarchical skill representations. The structure of these skill libraries will be dual-layered. At the upper level, the libraries will determine the manipulation type, identify the specific object, and potentially provide a goal for the lower-level. For instance, to insert a beam into a hole, the goal could parameterize which hole to use. 
+The lower level will focus on learning smooth manipulation trajectories in the object's coordinate frame, building on our accomplishments in generating smooth motion \cite{li2023prodmp}. The executed movement will be conditioned on its goal, the local geometric representation of the target object, and its environment, which allows adaptations to the object's shape and nearby obstacles.
+To learn the hierarchical architecture, we will refine our curriculum-based \gls*{il} approach for deep mixture of experts models \cite{blessing2023information}. Then, we will tailor it to the aforementioned hierarchical structure. 
+In this framework, the mixture component index will represent the manipulation type, while the object to be manipulated will be an additional discrete hidden variable, enhancing complexity and adaptability. In contrast, the goal descriptor can be modelled as continuous latent variable. A major benefit of this architecture is its modularity, permitting the incorporation of new components for newly demonstrated solutions during the learning process. We plan to enhance individual mixture components using diffusion policies with transformer-based architectures \cite{chi2023diffusion,David2024}, due to their rich expressiveness capacities. %Initially, this task will focus on simple parallel jaw grippers, with five-fingered hands addressed in task WP3.b. 
+% aligning closely with the dynamic and varied nature of real-world manipulation tasks. Through these advancements, our object-centric manipulation skill libraries will be well-equipped to handle a wide range of scenarios, offering both precision and adaptability. 
+
+\item \textit{\textbf{Scaling to High Dimensional Manipulators and Different Tool Geometries:}}
+This task is dedicated to mastering dexterous in-hand manipulation with five-finger hands and intricate tool usage, where our skill representation aims to generalize across various tool geometries. 
+With five-finger hands, the approach will scale to high-dimensional end-effectors, enabling complex in-hand tool manipulations like object reorientation. To achieve this, we will include the geometries of both the tool and end-effector in the scene's geometric representation, which will be used for conditioning the low-level skill execution. This way allows the policy to determine optimal finger placements and manipulation trajectories, based on the geometric relations between the end-effector (including fingers), potential tool, and the target object. To integrate contact sensor data from the fingertips, we will spatially embed these sensor values as special nodes in our scene representation.
+\todo{Adapt SOTA and novelty for high-\gls*{dof} actuators}
+
+\item \textit{\textbf{Data-Efficient Fine-Tuning of Hierarchical Manipulation Skill Libraries:}}  This task focuses on developing data-efficient \gls*{rl} algorithms to refine the movement-primitive based hierarchical skill libraries established in WP3.a and WP3.b, with a focus on smooth exploration (see challenge C8).
+We will extend our prior work for \gls*{rl} with \gls*{mp} representations \cite{li2023tcp,otto2023deep, otto2023mp3} to data-efficient off-policy updates and enable them to fine-tune policies obtained via learning from a demonstration dataset, similar as in \cite{ball2023efficient} for standard step-based policies. Furthermore, we will extend these MP-based \gls*{rl} algorithms to the developed hierarchical policy structures from WP3.a. Here, we can build upon our work on discovering versatile skills \cite{celik2022specializing}, and use similar lower-bound objectives to divide the optimization problem of the policy into its different abstraction layers. In terms of goal conditioning for the lower-level policies, we will introduce hindsight experience replay \cite{NIPS2017_453fadbd} into MP-based policy learning to further improve the data efficiency.
+
+
+\item \textit{\textbf{Robust Pre-Learning in Simulation and  Sim-to-Real Transfer:}} In this task we want to leverage our generated simulation environments to obtain valid initial solutions for specific manipulations without requiring massive training data on the real system. 
+We will utilize our prior work \cite{celik2022specializing} to discover versatile solutions for goal-oriented manipulations in the simulation environments. While a single solution found in simulation might not transfer well to the real system, having multiple solutions to transfer for a single task will provide a more robust strategy as solutions showing a large sim-2-real gap can be dismissed while others can be kept for further fine-tuning on the real system. Moreover, the found versatile solutions will inform the generic reward representations developed in WP4.a, reducing the number of required human feedback queries for the interactive learning process. 
+To further reduce the sim-2-real gap, the simulation models will be constantly updated with real data obtained by rolling out learned policies on the real system. Moreover, we will improve the simulation accuracy by importing the learned object dynamics models into the simulation and updating these models accordingly during the fine-tuning process.
+%The dynamic models will be constantly updated by real-world data from the \gls*{rl} process. A critical aspect of using learned models for policy optimization is  to accurately capture  epistemic  uncertainties of the learned model \cite{becker2022uncertainty}. These uncertainties will be addressed using our Bayesian Meta-Learning and Fine-Tuning framework introduced in WP2.a. and WP2.c. 
+\end{enumerate}
+\paragraph{\textit{Expected Outcome:}} \textit{WP3 will produce advanced, hierarchical, object-aware robotic manipulation skill architectures that are adept at managing scenes with numerous objects, scale to dexterous manipulators, and generalize to various tools used for specific manipulations. We will create algorithms to learn these skills from demonstrations efficiently fine-tune them using \gls*{rl}, and discover versatile solutions in simulation with subsequent sim-2-real transfer to provide already good initial solutions for interactive learning.} %the interactive learning process.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \subsection{WP4: Interactive Skill Enhancement and Instruction-Guided Skill-Priors}
+\subsection{WP4: Learning from Interactive Human Feedback and Offline Instructions}
+WP4 focuses on improving the interactive fine-tuning of object-centric manipulation skills, reducing the dependence on extensively engineered, task-specific reward functions. Our strategy includes developing versatile, object-centric reward representations that can adapt to various types of human feedback, including demonstrations, comparisons, haptic, and verbal corrections. This flexibility in feedback integration is essential for real-time refinement and customization of robot skills.
+A key component of WP4 is enhancing the robot's prior task knowledge using foundational models, along with language and visual information from instruction manuals. This approach will jumpstart the learning process for complex manipulation tasks and provide vital priors for object and skill selection policies. This capability will enable robots to execute complex instructions, such as visually guided origami folding or constructing intricate structures from a varied set of building blocks.
+%Further, we plan to innovate algorithms that efficiently allocate human supervision across multiple robots. This strategy aims to substantially reduce operational costs in industrial settings, making the deployment of robotic platforms more economically viable. It also leverages the human operator’s capacity more effectively, potentially accelerating the overall training process and enhancing the speed of skill acquisition of the robot.%across the robot fleet.
+%This WP comprises the following tasks:
+\begin{enumerate}
+\item \textit{\textbf{Forming Generic Reward Representations:}} 
+This subtask aims to develop generic object-centric reward representations based on the local geometry of the scene, including the target object, potential tool, and end-effector. Building on our previous work \cite{freymuth2022vigor}, we will form reward functions for manipulation trajectories grounded in the scene geometry, enabling a model that generalizes to novel object configurations like position, rotation, or scale. Initially, this reward representation will be estimated from demonstration data using adversarial approaches or score-based diffusion methods, then fine-tuned by pairwise comparisons from human operators, as in \cite{taranovic2023ailp}. We will also integrate corrections from the human operator via the tele-operation interface (refer to WP1). Each correction will act as a pairwise comparison, favoring the corrected trajectory over the original.
+Furthermore, we plan to expand this to foundational reward models suitable for a wide range of manipulations defined by language descriptions. We will use visual language models \cite{CLIP,LLaMA} to assess how well images of a manipulation match their language descriptions. These evaluations will form a basis for interactive reward fine-tuning using pairwise comparisons or corrections.  
+% Our learned reward representation
+% \item \textit{\textbf{Generic Reward Representations from Multiple Feedback Sources:}}  In this task, we aim to construct object-centric reward representations~\cite{freymuth2022vigor} that draw from a range of feedback sources, including demonstrations, pair-wise comparisons, and scorings. The primary objective is to assess manipulation trajectories in relation to the coordinate frames of objects, leveraging both visual and geometric aspects of the object for a holistic evaluation. Foundation models will serve as an initial framework for these reward structures, which will subsequently undergo fine-tuning through human feedback. A significant challenge in this process is the development of effective loss functions that can integrate diverse feedback modalities into a cohesive learning framework. Building upon our previous research in \gls*{rl} from human feedback \cite{taranovic2023ailp}, where demonstrations and pairwise comparisons were effectively used to guide policy improvements, we plan to refine this approach. We will explore innovative methods, such as learning score functions within diffusion processes, and integrating these with pairwise preference loss. This approach is expected to enhance the generalization capabilities of the reward representations beyond the learned discriminators presented in \cite{taranovic2023ailp}, offering a more nuanced and adaptive reward system for complex robotic tasks.
+
+\item \textit{\textbf{Incorporating Verbal Corrections:}}
+This subtask is dedicated to integrating verbal corrections of observed behavior, like "you did not push hard enough." We will utilize corrections provided via tele-operation, enriched with language descriptions to clarify the human operator's intent behind each correction. Given a dataset of such language annotated corrections, we will fine-tune a visual language model to predict the corrected trajectory given visualizations of the original one, e.g. images of single time points. In new scenes, this model will predict corrections online during skill execution, guided by user-provided language prompts suggesting improvements. The predicted correction will be utilized not only for real-time execution and error recovery but also, following successful execution, to update both the policy and reward models with the effective correction. 
+
+%We plan to develop a classifier that predicts preferences between two manipulation trajectories based on verbal feedback for the first trajectory. This classifier will utilize pre-trained vision-language models, fine-tuned with synthetic data from simulation and real data from our \gls*{ar} interface. Our goal is to create a versatile preference prediction system that can be quickly adapted to new tasks, allowing verbal corrections to be effectively implemented without extensive retraining of the preference model.
+
+
+\item \textit{\textbf{Learning from Visual and Language Instructions:}} Humans often rely on instruction manuals for guidance on new tasks, and we aim to give robots this capability to adapt to new tasks by interpreting these manuals. This involves developing systems to parse manuals into distinct segments of visual and linguistic instructions. The information obtained will provide foundational knowledge for skill and object selection in our hierarchical policy framework. Identifying differences between steps in the visual instructions, such as which parts have been added to a scene, is a crucial aspect of this process.
+Furthermore, visual instructions from manuals will be key in goal conditioning for selected manipulation skills, like accurately placing components in assembly tasks. Our method will build on recent techniques for interpreting sketched target configurations \cite{Sundaresan2023RTSketch}, but will expand to understand sequential, multi-step instructions typical in manuals.
+Given the complexity of these instructions and the foundational knowledge required, fine-tuning the skill selection priors will be necessary. We plan to enhance our interactive teaching methods to enable robots to effectively process and understand a wide range of instruction manuals, moving beyond teaching a single task.
+
+%[CITE]. We could add a citaiton to a book with Origami or lego instructions.
+%This process will involve fine-tuning the robots' skills to achieve outcomes in alignment with the steps outlined in the manuals, ensuring accurate task completion as per the provided instructions. 
+
+% \item \textit{\textbf{Distributing Operator Supervision between Multiple Robots:}} 
+% To enhance the efficiency and effectiveness of our interactive teaching platform, we plan to extend its capabilities to a fleet of robots. This extension will enable a single human operator to supervise multiple robots simultaneously. While previous approaches have considered learning from demonstrations in a fleet robotics context \cite{hoque2022fleetdagger}, our approach will incorporate various feedback modalities, each imposing different levels of mental load on the human supervisor. For instance, providing a new demonstration for a scenario that the system cannot autonomously resolve is demanding and time-consuming. In contrast, offering preference feedback based on pairwise comparisons is a more lightweight feedback modality.
+% In this context, we aim to develop algorithms capable of optimally allocating the supervisor's attention across multiple robots and selecting the most appropriate feedback modality for each situation. These algorithms will be designed to ensure the supervisor can effectively monitor the status of each robot and intervene in a specific robot's skill execution when errors are detected. This requires the development of user interfaces that provide a comprehensive overview of each robot's state, allowing for timely and precise operator interventions.
+% Such a system would not only streamline the supervision process but also significantly enhance the overall learning efficiency of the robot fleet.  
+\end{enumerate}
+\paragraph{\textit{Expected Outcome:}} \textit{WP4 will set new standards in robot instructability by developing algorithms that integrate offline and interactive instructions, and extend these methods to a fleet of robots. This will enhance the speed and cost-efficiency of robot teaching, marking a significant advancement in interactive robot learning.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{WP5: Use Cases and User Studies}
+{WP5} is dedicated to implementing and evaluating three high-impact use cases, each designed to progressively increase in complexity throughout the project. This work package not only aims to apply the technologies developed in earlier WPs but also to conduct extensive user studies to evaluate the effectiveness of \gls*{ar} interfaces and interactive teaching algorithms. Each use case will be performed with a dedicated robot platform tailored to the task specifications. All use cases will get an initial simulation environment that can also be directly accessed with the teleoperation interface for fast prototyping and learning in simulation. 
+%The use cases are:
+\begin{enumerate}
+    \item \textbf{Lego Sort and  Dissambly.} 
+    \textit{Tasks:} Sorting and disassembling a box full of Lego bricks.
+    \textit{Objectives:} Showcases advances in skill learning in cluttered environments with a large number of objects and requires understanding disassembling composite objects.
+    \textit{Robot Platform:} This task will be implemented with Franka Emika robots. 
+
+    \item \textbf{Folding Paper into Origami:}
+        \textit{Tasks:} Folding a diverse range of origami sculptures from easy to medium difficulty\todo{can we cite an Origami book here?} following instruction manuals.
+        \textit{Objectives:} Showcases the ability to understand visual and language instructions and model a single deformable and/or articulated object (the paper).
+        \textit{Robot Platform:} Origami folding requires dexterous finger manipulation and highly accurate control which is provided by the bimanual 5-finger manipulators. %For simple Origamis, we will test the Aloha platform while at a later stage of the project, we will transfer to more complex Origamis and bimanual 5-fingered manipulation. 
+        
+
+    \item \textbf{Lego Assembly with Instruction Manuals:}
+         \textit{Tasks:} Assembling complex Lego structures following instruction manuals.
+         \textit{Objectives:} Showcases advances in skill learning in cluttered environments and requires understanding assembling and disassembling composite objects as well as understanding multi-step visual and linguistic instructions.
+         \textit{Robot Platform:} This task requires fine manipulation skills and intricate handling of lego bricks of various sizes, which requires a dexterous hand. Hence, we will use the Shadow Robotics Bimanual tele-operation platform and learn dexterous manipulations with the 5 fingered Shadow hands. 
+\end{enumerate}
+
+\paragraph{User Studies and Evaluations:}
+In WP5, user studies will comprehensively evaluate the usability and effectiveness of the developed \gls*{ar} interfaces and teaching methods. This research will involve a comparative analysis between the new bimanual tele-operation interfaces and traditional screen or gamepad-based interfaces, evaluating their effectiveness with participants ranging from robotics experts to novices. Participants will undertake specific tasks in various scenarios to mimic real-world applications, providing a thorough evaluation of the technology's adaptability and flexibility.
+These studies will measure the effectiveness of \gls*{ar} interfaces and teaching methods using key indicators such as ease of use (through user surveys), task efficiency (via time and success rates), user satisfaction (with post-use interviews and Likert scale surveys \cite{allen2007likert}), error rates (for precision and reliability), and cognitive load (assessed using NASA-TLX \cite{hart2006nasa}). The results aim to confirm the practical applicability and user-friendliness of these systems, offering vital feedback for future enhancements and establishing new standards in robotic teaching and \gls*{ar} interface design.
+
+\paragraph{\textit{Expected Outcome:}}\textit{
+WP5 aims to demonstrate the practical applicability and versatility of the developed technologies in real-world scenarios, validate the project's approach to intuitive, interactive robotic teaching, and provide insights for future developments in robotic teaching methodologies and \gls*{ar} interface designs.}
+
+\subsection{Timeline and resource allocation}
+Below is the anticipated timeline of the various tasks. The assignment of (post-)doctoral researchers to WPs and their required background are also shown.  While each PhD is focused on a certain topic (WP2-WP4), all PhDs and the research assistants have to contribute to the infrastructure workpackages WP1 and WP5 to develop the tele-operation platforms and use-cases. The post-doc will be hired in the area of \gls*{hri}, teleoperation or \gls*{ar} systems and will also lead the user studies and human centric design of the \gls*{ar} teleoperation system. Our research assistants will help in the integration effort of the robot platforms, the simulation environments as well as in the user studies. The time-line of the project is depicted in Figure  \ref{fig:gantt}.
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=1\linewidth]{img/gantt/gantt_chart.png}
+    \caption{Visualization of the project's time-line.
+    }
+    \label{fig:gantt}
+\end{figure*}
+
+
+\section{Summary, Impact and Risk Analysis}
+
+SMARTeach, as conceived under the ERC panel's guidance, is a venture into the realms of high risk and high gain, a characteristic trait of pioneering research initiatives. The chosen use cases and objectives of SMARTeach reflect these high-risk, high-gain aspects. The use cases are fraught with challenges, such as managing numerous objects in a single scene and dealing with a variety of objects including rigid, deformable, articulated, and composite materials. Moreover, developing the capacity for robots to follow instructions and transfer knowledge to unseen tasks is another ambitious goal. The objectives are meticulously crafted to tackle these key challenges head-on. They focus on streamlining the data generation process in robotics, a notable limitation in the current landscape, developing scalable manipulation skills, achieving comprehensive interactivity in the learning pipeline, and leveraging cutting-edge foundational models and \gls*{llm}. These efforts are geared towards achieving a level of robot instructability that parallels human capabilities in workplace settings. 
+
+%The project's high-risk nature stems from several critical factors that are outlined below.
+\subsection{Risk Mitigation}
+\paragraph{(R1) Mechanical and Sensor Limitations} If the targeted manipulation tasks prove too complex for the Shadow hand's capabilities, we will modify the use-cases to match the mechanical limits of our systems. We might use building kits with larger pieces or switch to simpler paper folding tasks than origami, like making paper planes.
+Also, if essential sensors like depth cameras and tactile sensors do not meet our stringent requirements, we will use high-fidelity cameras, like the Zivid camera \cite{zivid}, which provides highly accurate point clouds of the scene, albeit at a lower frequency. This high-quality camera can be used to calibrate more cost-effective sensors and also supply ground-truth data for model training.
+\paragraph{(R2) Too Complex Physical Simulations}
+Some parts of our project also rely on simulation and it is unclear whether we can simulate complex physical processes such as paper folding or disassembly of composite objects with current \gls*{fem} that are used by current simulators such as Isaac Sim \cite{mittal2023orbit}. Here, we can augment these models with learned neural network models that have been learned from high-fidelity simulation data obtained from specialized software such as Abaqus \cite{abaqus}, where we can build upon our successful collaboration with simulation experts such as Prof. Luise Kärger in the DFG research group FOR 5339.
+
+\paragraph{(R3) Dexterous Skills are too Hard to Demonstrate}
+A pivotal component of our approach is the \gls*{ar} teleoperation interface, which could be too hard to use to demonstrate and teach dexterous 5-finger manipulation. In this case, we will rely on simpler motions that do not require complex in-hand manipulations but outsource most manipulation to the arm. 
+%Moreover, as our approach relies on many different feedback sources and not just on the demonstrations via teleoperation, we are confident that other feedback sources can compensate in situations where a single specific feedback is not working well. 
+Moreover, our approach relies not only on the demonstrations via teleoperation and we are confident that the other considered feedback sources can compensate in situations where a single specific feedback is not working well. 
+%Another mitigation strategy is to incorporate data from direct human observations and motion tracking in the interactive learning process CITE Tamin. 
+We can further mitigate this using data from direct human observations and motion tracking in the interactive learning process \cite{Jianfeng2023KVIL}.
+
+\paragraph{(R4) Learning requires too much Human Feedback}
+Given our experience with \gls*{ar} teleoperation systems, we expect an experienced user can provide a few hundred complex demonstrations in a day. If learning complex behaviors would require more than a few thousand demonstrations, our teaching approach would be impractical. In this case, we will invest more resources in getting demonstrations in simulation using crowdsourcing, better utilizing \gls*{rl} approaches in simulation, and extracting more knowledge out of current foundational models. 
+
+%\paragraph{(R5) Missing Adoption from Industry} Our use cases address long-term challenges in robot manipulation and are aimed at lower technology readiness level (TRL). Yet, we are confident that the technology developed in this project will have impact for many use cases in industry and the service sector, such as electronic assembly, machine mending, bin sorting or packing and unpacking. We will be in constant contact with our industry  and start-up partners such as Bosch, Artiminds and Telekinesis trying to disseminate our technology and submitting joint collaborative projects to extend our technology to industrial use cases and high TRL level (6-8). If indsutrial adoption fails to materialize, we will investigate the limiting factors of the developed technology with our industrial partners, which will also guide the research of SMARTeach. 
+
+
+%On the flip side, the high-gain prospects of SMARTeach are substantial. Successful outcomes from this project could mark a significant milestone in \gls*{ai} technology and cognitive robotics. Such advancements would not only enhance robotic manipulation skills and their understanding of the physical world but also improve their ability to interact with human instructors. The potential breakthroughs from this endeavor could redefine the role and effectiveness of robotics across a wide range of sectors, greatly expanding their applicability and impact.
+
+\subsection{Impact and Exploitation of Results}
 \label{sec:impact}
 \input{parts/impact}
 
-\section{Resources}
-\label{sec:resources}
-\input{parts/resources}
+\textbf{\textit{Scientific Impact:}} SMARTeach marks a significant step forward in interactive  learning for robot skill, prediction and perception models and will set a new standard in robot instructability through interaction with a human teacher as well as  offline instructions such as instruction manuals. In terms of functional intelligence in robot manipulation, SMARTeach will address the upcomming challenges in the next-generation of robot manipulation such as manipulating a large number of objects, tackling scenes of mixed (rigid, deformable, articulated, composite) objects and understanding complex instructions to tackle unseen tasks. SMARTeach will also contribute to foundational advancements in \gls*{ai}, with implications for \gls*{il} for robot manipulation, \gls*{rl} from human feedback, variational inference, fine-tuning foundational models using meta-learning, modelling object interaction dynamics and simulation in robotics. \todo{Anything missing here?}
+\newline
+\textbf{\textit{Industrial Impact:}} SMARTeach will have a profound impact on industrial and service  sectors by significantly reducing effort and cost of applying robotics \gls*{ai} technology to complex manipulation tasks. The project's advancements in intuitive robot teaching and scalable learning algorithms will enable more efficient, accurate, and flexible robotic systems, applicable to a wide range of industrial tasks such as industrial assembly, manufacturing, furniture assembly and assembly in construction as well as service sectors such as household robotics and robotics in care centers. Further, the new intuitive teleoperation interfaces on their own may have impact in sectors such as remote maintenance, space robotics and search and rescue operations. 
+The results obtained in SMARTeach will also inform other more application driven projects of my lab such as the DFG research group for production engineering (FOR 5339), the newly funded DFG collaborative research center (CRC) 'Circular factory', investigating robotics \gls*{ai} technology for the circular economy by remanufacturing old products into new life cycles and the Jubot project dealing with robotics for elderly care. I further plan to exploit the results of SMARTeach within my involvement of the 'Forschungszentrum Informatik' (FZI), which is the transfer partner of KIT. Here, we plan to apply for several grants from the Bundesministerium für Bildung und Forschung (BMBF) with my industrial collaboration partners (Bosch, Artiminds, Telekenesis) to exploit the fundamental results of SMARTeach in industrial settings. \newline
+\textbf{\textit{Societal Impact:}} The overarching goal of SMARTeach is to provide technological solutions that address societal needs. By automating complex tasks, the project will alleviate labor shortages and contribute to safer work environments. The commitment to open-source, reproducible technology underlines SMARTeach’s dedication to accessible and equitable technological progress. In the long run, SMARTeach's contributions will not only streamline operations across various sectors but also support sustainable practices and enhance quality of life, demonstrating the project’s extensive societal benefits. 
+
+
 
 \pagebreak
 \bigskip

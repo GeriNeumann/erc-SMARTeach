@@ -1,7 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{../erc}[2019/02/26 erc]
-\LoadClass[oneside, a4paper, onecolumn, fontsize=11pt]{scrartcl}
-
+\LoadClass[oneside, a4paper, one column, fontsize=11pt]{scrartcl}
+%\RequirePackage{helvet}
+\RequirePackage[utf8]{inputenc}
 \RequirePackage{mathptmx}
 \RequirePackage{graphicx}
 \graphicspath{{../img/}}
@@ -15,22 +16,70 @@
 \RequirePackage{textcomp}
 \RequirePackage{array}
 \RequirePackage[TS1,T1]{fontenc}
+\RequirePackage{setspace}
+\singlespacing
+
+\RedeclareSectionCommand[
+  runin=false,
+  afterindent=false,
+  beforeskip=0.25\baselineskip,
+  afterskip=0.25\baselineskip]{section}%, subsection, paragraph}
+\RedeclareSectionCommand[
+  %runin=false,
+  %afterindent=false,
+  beforeskip=0.25\baselineskip,
+  %afterskip=0.25\baselineskip
+  ]{paragraph}
+  \RedeclareSectionCommand[
+  runin=false,
+  afterindent=false,
+  beforeskip=0.25\baselineskip,
+  afterskip=0.25\baselineskip]{subsection}
+\RedeclareSectionCommand[
+  runin=false,
+  afterindent=false,
+  beforeskip=0.25\baselineskip,
+  afterskip=0.25\baselineskip]{subsubsection}
+  
+%\titlespacing{\section}{0pt}{*1}{*0}
+
+\RequirePackage{caption}
+\captionsetup{belowskip=0pt,
+              aboveskip=4pt,
+              format=plain}
+
+\addtolength{\textfloatsep}{-20pt}
+\addtolength{\intextsep}{-12pt}
+
 
 \newsavebox{\@abstract}
 \renewenvironment{abstract}
 {\vfill\begin{lrbox}{\@abstract}\begin{minipage}{0.945\textwidth}}
 {\end{minipage}\end{lrbox}\fbox{\usebox{\@abstract}}}
 
-\setkomafont{section}{\normalsize\normalfont\bfseries}
-\setkomafont{subsection}{\large\sffamily\mdseries\upshape\color{sectiontitlecolor}}
+\setkomafont{subsection}{\normalsize\normalfont\bfseries}
+\setkomafont{section}{\large\sffamily\mdseries\upshape\color{sectiontitlecolor}\bfseries}
 \renewcommand{\thesection}{\alph{section}} 
 
 \renewcommand{\othersectionlevelsformat}[3]{\ifthenelse{\equal{#1}{section}}{Section #3: }{#3) }}
 
 \RequirePackage{ifthen}
 
-\RequirePackage[style=authoryear]{biblatex}
-\ExecuteBibliographyOptions{maxnames=8,giveninits,parentracker=true,uniquename=init}
+\RequirePackage[style=numeric, backend=biber]{biblatex}
+
+\DeclareFieldFormat{title}{\textit{#1}}
+
+
+\ExecuteBibliographyOptions{
+maxbibnames=8,
+minbibnames=8,
+mincitenames=1,
+maxcitenames=2, 
+%maxnames=1,
+giveninits=true,
+%parentracker=true,
+uniquename=false,
+uniquelist=false}
 \defbibnote{bolditalics}{My name appears in bold, names of PhD students I supervised in italics.}
 
 \RequirePackage{xpatch}
@@ -81,25 +130,19 @@
 \providecommand*{\sectionstyle}[1]{{\sectionfont\color{sectiontitlecolor}#1}}
 \providecommand*{\subsectionstyle}[1]{{\subsectionfont\color{subsectioncolor}#1}}
 
-\DeclareBibliographyCategory{self}
-\AtEveryCitekey{%
-  \ifcategory{self}{%
-  }{%
-  \defcounter{maxnames}{2}%
-  }%
-}
+\AtEveryCitekey{\ifkeyword{self}{\bfseries}{}}
 
-\newcommand*{\mknamesignature}[5]{\xdef#1{#2|||}}
+%\newcommand*{\mknamesignature}[5]{\xdef#1{#2|||}}
 
-\DeclareIndexNameFormat{byname}%
- {%
-  \mknamesignature{\currentsignature}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
-  \ifdefequal{\highlightname}{\currentsignature}%
-    {\addtocategory{self}{\thefield{entrykey}}}%
-    {}%
-}
+%\DeclareIndexNameFormat{byname}%
+% {%
+%  \mknamesignature{\currentsignature}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
+ % \ifdefequal{\highlightname}{\currentsignature}%
+ %   {\addtocategory{self}{\thefield{entrykey}}}%
+ %   {}%
+%}
 
-\AtDataInput{\indexnames[byname]{author}}
+%\AtDataInput{\indexnames[byname]{author}}
 
 \newif\ifbone
 

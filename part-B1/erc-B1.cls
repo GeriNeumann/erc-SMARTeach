@@ -14,6 +14,7 @@ Part B2 is evaluated in Step 2 only)}\par
 \vspace{.5cm}\@title\par
 \vspace{.7cm}\@acronym\par
 \normalfont\normalsize\raggedright\vspace{2cm}\begin{compactitem}
+\vspace{-1.5cm}
 \item \textbf{Principal investigator (PI):} \@author
 \item \textbf{Host institution:} \@institution
 \item \textbf{Proposal duration:} 60 months%

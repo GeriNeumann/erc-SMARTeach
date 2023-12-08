@@ -5,16 +5,38 @@
 \addbibresource{../self.bib}
 \addbibresource{../references.bib}
 
-\newcommand*{\todo}[1]{\textbf{\color{red}[TODO: #1]}}
+% Set the boolean flag
+\newboolean{print_todo}
+\setboolean{print_todo}{false} % Change to false to hide todos
 
-\title{\todo{Proposal title}}
-\acronym{\todo{Proposal acronym}}
-\author[\todo{Last name}]{\todo{Full name}}
-\institution{\todo{institution}}
+% Define the todo command
+\newcommand*{\todo}[1]{%
+  \ifthenelse{\boolean{print_todo}}{% Check if print_todo is true
+    \textbf{\color{red}[TODO: #1]}% Display the todo
+  }{% Else do nothing
+  }%
+}
 
-\newcommand{\ercyear}{2019} % Change year here
+% \newcommand*{\todo}[1]{\textbf{\color{red}[TODO: #1]}}
+\newcommand{\copied}[1]{{\textcolor{purple}{Copied: #1}}}
+\newcommand{\gpt}[1]{{\textcolor{blue}{ChatGPT: #1}}}
+
+%\title{Scalable Robot Manipulation through Interactive Instructability and Intuitive Teaching}
+%\title{\textbf{S}calable Robot \textbf{M}anipulation through \textbf{A}ugmented-\textbf{R}eality Enhanced In\textbf{t}eractive, In\textbf{t}uitive and Low-Effor\textbf{t} T\textbf{each}ing}
+\title{\textbf{S}calable \textbf{M}anipulation Learning through \textbf{A}\textbf{R}-enhanced \textbf{T}eleoperation enabling \textbf{I}ntuitive \textbf{I}nteractive \textbf{I}nstructions}
+
+\acronym{SMARTI$^3$}
+\author[Neumann]{Gerhard Neumann}
+\institution{Karlsruhe Institute of Technology (KIT)}
+
+\newcommand{\ercyear}{2024} % Change year here
 \newcommand{\erctype}{Consolidator} % or Starting, or Advanced
 
+
+%Geri goes bold
+\listadd{\boldnames}{Neumann, G}
+
+%PhDs go italic 
 % To put student names in italic in the bibliography, add
 % for each of the PI's students one line of the form:
 % \listadd{\italicnames}{Last, F}
@@ -22,6 +44,29 @@
 % or her first name. In case of a middle name, write:
 % \listadd{\italicnames}{Last, F\bibinitperiod\bibinitdelim M}
 % where M is the initial of the middle name.
+\listadd{\italicnames}{Arenz, O}
+\listadd{\italicnames}{Gebhardt, G\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim W}
 
-% To put the PI's name in bold:
-\mknamesignature{\highlightname}{Last}{First}{}{}
+\listadd{\italicnames}{Volpp, M}
+\listadd{\italicnames}{Hüttenrauch, M}
+
+\listadd{\italicnames}{Becker, P}
+\listadd{\italicnames}{Celik, O}
+\listadd{\italicnames}{Li, G}
+\listadd{\italicnames}{Shaj, V}
+\listadd{\italicnames}{Freymuth, N}
+\listadd{\italicnames}{Schreiber, N}
+\listadd{\italicnames}{Dahlinger, P}
+\listadd{\italicnames}{Blessing, D}
+\listadd{\italicnames}{Jia, X}
+\listadd{\italicnames}{Jiang, X}
+\listadd{\italicnames}{Taranovic, A}
+\listadd{\italicnames}{Hoang, T}
+
+\listadd{\italicnames}{Otto, F}
+\listadd{\italicnames}{Duffhauss, F}
+\listadd{\italicnames}{Gao, N}
+\listadd{\italicnames}{Beik-Mohammadi, H}
+\listadd{\italicnames}{Boltres, A}
+\listadd{\italicnames}{Gholam Zadeh, S}
+\listadd{\italicnames}{Freiberg, R}

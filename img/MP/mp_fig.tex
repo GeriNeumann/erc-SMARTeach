@@ -1,0 +1,68 @@
+\begin{figure}[t]    
+    \centering
+    % \hspace*{\fill}%    
+    \begin{subfigure}{0.24\textwidth}        
+        \raisebox{0.14cm}{
+        \resizebox{\textwidth}{!}{
+            \input{img/MP/promp_prodmp}}%
+        }        
+        \captionsetup{margin={7.5mm,0mm}}
+        \caption{}
+        \label{subfig:mp_replan}
+        % \caption{Traj.-based, Episodic RL}        
+    \end{subfigure}    
+    \hfill
+    \hspace{0.08cm}
+    \begin{subfigure}{0.172\textwidth}
+        \raisebox{0.29cm}{
+        \includegraphics[width=\linewidth]{img/MP/robot_push.png}
+        }
+        \captionsetup{margin={2mm,0mm}}
+        \caption{}
+        \label{subfig:robot_push}
+    \end{subfigure}    
+    \hfill
+    \hspace{0.1cm}
+    \begin{subfigure}{0.197\textwidth}
+        \raisebox{0.242cm}{
+        \includegraphics[width=\linewidth]{img/MP/robot_pick.png}
+        }
+        \captionsetup{margin={2mm,0mm}}
+        \caption{}
+        \label{subfig:robot_pick}
+    \end{subfigure}
+    \hfill
+    \hspace{0.18cm}
+    \begin{subfigure}{0.325\textwidth}
+        \raisebox{0.315cm}{% left, bottom, right, top
+        \includegraphics[width=0.45\linewidth, trim=6cm 5cm 6cm 2.5cm, clip]{img/MP/tt_1.png}
+        \includegraphics[width=0.45\linewidth, trim=6cm 5cm 6cm 2.5cm, clip]{img/MP/tt_2.png}
+        }
+        \captionsetup{margin={-4.5mm,0mm}}
+        \caption{}        
+        \label{subfig:mp_tt}
+    \end{subfigure}            
+    % \hspace*{\fill}%    
+    \caption{\textbf{\small Illustrations of our prior work on motion primitives. (a) ProDMP (top) \cite{li2023prodmp} ensures continuous sampling at the replanning point, while ProMP (bottom) \cite{paraschos2013probabilistic} cannot fit the initial condition well. (b) + (c) Using MP in robot pushing and grasping tasks with movement replanning \cite{li2023prodmp, otto2023mp3}. (d) Leverage versatile skills in playing table tennis, i.e. learning a forehand and a backhand stroke, given the same incoming ball \cite{celik2022specializing,blessing2023information}.}}
+    \label{fig:obj3}
+    %\vspace{0.3cm}
+\end{figure}
+
+
+% Backup
+    % \begin{subfigure}{0.19\textwidth}
+    %     \raisebox{0.32cm}{
+    %     \includegraphics[width=\linewidth]{img/MP/YCB.jpeg}
+    %     }
+    %     \caption{}        
+    %     \label{subfig:clutter_obj}
+    % \end{subfigure}  
+
+    % \begin{subfigure}{0.19\textwidth}                
+    %     \raisebox{0cm}{
+    %     \resizebox{\textwidth}{!}{\input{img/MP/mp_traj}}%
+    %     }
+    %     \captionsetup{margin={7.5mm,0mm}}
+    %     \caption{}
+    %     \label{subfig:mp_traj}
+    % \end{subfigure}        

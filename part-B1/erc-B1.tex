@@ -1,10 +1,41 @@
 \documentclass{erc-B1}
 
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\usetikzlibrary{positioning, arrows, automata}
+\usetikzlibrary{backgrounds, calc}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+
+
+\renewcommand{\thesection}{\alph{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\usepackage{enumitem} 
 \input{../erc-common}
 
 \begin{document}
 \maketitle
 \input{../abstract}
+\begin{figure*}[h!]
+    \centering
+    \resizebox{0.96\textwidth}{!}{\input{img/fig_one/fig1_b1}}
+    %\includegraphics[width=0.95\linewidth]{img/fi}
+    \vspace{0.5cm}
+    %\caption{{\small\textbf{SMARTeach \protect\footnotemark.}} %Illustration of SMARTeach: A bi-manual robot setup with dexterous hands is tele-operated by a human via an AR interface. The human operator provides demonstrations, corrections, pairwise comparisons and verbal instructions. These are integrated using interactive reinforcement learning, meta learning, and Bayesian fine-tuning to update the foundational models used for the robot's skill, perception, prediction and reward models rapidly. The operator visualizes task knowledge through future plans, object positions, relations, and scene predictions via AR, and can adjust the robot's models with interactive feedback. The skill model captures manipulation task hierarchy, focusing on target object selection at a higher level and skill execution at a lower level. Both levels can be informed by visual language models that parse instruction manuals\protect\footnotemark.}}
+    %}
+    %\label{fig:interfaces}
+    %\vspace{0.5cm}
+\end{figure*}
+%\footnotetext{Image for Lego manuals taken from \url{https://www.lego.com}}
 \vfill
 
 \secsynopsis{}
